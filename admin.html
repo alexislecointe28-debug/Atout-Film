@@ -8,6 +8,7 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: system-ui, sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; }
 
+  /* LOGIN */
   #login { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
   .login-card { background: #1a1a1a; border: 1px solid #333; border-radius: 16px; padding: 40px; width: 380px; }
   .login-card h1 { font-size: 1.2rem; margin-bottom: 6px; }
@@ -15,54 +16,72 @@
   label { display: block; font-size: .75rem; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: .05em; }
   .login-card input { width: 100%; padding: 11px 13px; background: #111; border: 1px solid #2a2a2a; border-radius: 8px; color: #fff; font-size: .93rem; margin-bottom: 14px; outline: none; font-family: monospace; }
   .login-card input:focus { border-color: #C8960C; }
-  .btn { width: 100%; padding: 12px; background: #C8960C; color: #0a0a0a; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; font-size: .97rem; }
-  .btn:hover { background: #E8B422; }
+  .btn-login { width: 100%; padding: 12px; background: #C8960C; color: #0a0a0a; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; font-size: .97rem; }
+  .btn-login:hover { background: #E8B422; }
   #login-error { color: #ef4444; font-size: .8rem; margin-top: 8px; display: none; }
   .hint { font-size: .72rem; color: #444; margin-top: 8px; line-height: 1.5; }
 
+  /* ADMIN */
   #admin { display: none; }
   header { background: #111; border-bottom: 1px solid #1e1e1e; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
   header h1 { font-size: .97rem; color: #C8960C; font-weight: 700; }
-  .logout { background: none; border: 1px solid #2a2a2a; color: #555; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: .8rem; }
-  .logout:hover { border-color: #C8960C; color: #C8960C; }
+  .header-right { display: flex; gap: 10px; align-items: center; }
+  #pending-badge { display:none; background:#C8960C22; border:1px solid #C8960C55; color:#C8960C; padding:5px 12px; border-radius:6px; font-size:.78rem; font-weight:600; }
+  #publish-btn { display:none; background:#C8960C; color:#0a0a0a; border:none; padding:9px 20px; border-radius:7px; font-weight:700; font-size:.85rem; cursor:pointer; transition:background .2s; }
+  #publish-btn:hover { background:#E8B422; }
+  #publish-btn:disabled { opacity:.5; cursor:default; }
+  .logout { background:none; border:1px solid #2a2a2a; color:#555; padding:6px 14px; border-radius:6px; cursor:pointer; font-size:.8rem; }
+  .logout:hover { border-color:#C8960C; color:#C8960C; }
 
   main { max-width: 1200px; margin: 0 auto; padding: 28px; }
-  .intro { color: #555; font-size: .85rem; margin-bottom: 8px; }
-  .tip { background: #1a1500; border: 1px solid #C8960C33; border-radius: 8px; padding: 10px 14px; font-size: .78rem; color: #C8960C99; margin-bottom: 28px; }
+  .tip { background: #1a1500; border: 1px solid #C8960C33; border-radius: 8px; padding: 10px 14px; font-size: .78rem; color: #C8960C99; margin-bottom: 28px; line-height: 1.6; }
+  .tip strong { color: #C8960C; }
 
-  .section-title { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: #C8960C; margin: 32px 0 14px; padding-bottom: 8px; border-bottom: 1px solid #1e1e1e; display: flex; align-items: center; gap: 8px; }
+  .section-title { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: #C8960C; margin: 32px 0 14px; padding-bottom: 8px; border-bottom: 1px solid #1e1e1e; }
 
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
   .grid.wide { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 
-  .photo-card { background: #141414; border: 1px solid #1e1e1e; border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color .2s; }
-  .photo-card:hover { border-color: #C8960C55; }
+  /* CARD */
+  .photo-card { background: #141414; border: 1px solid #1e1e1e; border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color .2s; display: flex; flex-direction: column; }
+  .photo-card:hover { border-color: #C8960C44; }
   .photo-card.drag-over { border-color: #C8960C; background: #1a1500; }
+  .photo-card.pending { border-color: #C8960C77; }
 
-  .photo-preview { position: relative; background: #0d0d0d; overflow: hidden; }
-  .photo-preview.tall { height: 120px; }
-  .photo-preview.short { height: 90px; }
-  .photo-preview img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .2s; }
-  .photo-card:hover .photo-preview img { opacity: .7; }
-  .photo-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; font-size: .78rem; color: #fff; text-align: center; gap: 5px; flex-direction: column; background: rgba(0,0,0,.3); }
+  .photo-preview { position: relative; background: #0d0d0d; overflow: hidden; flex-shrink: 0; }
+  .photo-preview.tall { height: 130px; }
+  .photo-preview.short { height: 100px; }
+  .photo-preview img { width: 100%; height: 100%; object-fit: cover; display: none; transition: opacity .2s; }
+  .photo-card:hover .photo-preview img { opacity: .8; }
+  .photo-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; font-size: .75rem; color: #fff; text-align: center; flex-direction: column; gap: 4px; background: rgba(0,0,0,.4); }
   .photo-card:hover .photo-overlay { opacity: 1; }
-  .photo-overlay span { font-size: 1.3rem; }
-  .no-photo { display: flex; align-items: center; justify-content: center; color: #2a2a2a; font-size: .75rem; flex-direction: column; gap: 6px; }
-  .no-photo-icon { font-size: 1.6rem; opacity: .4; }
+  .no-photo { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
+  .no-photo-icon { font-size: 1.4rem; opacity: .25; }
+  .no-photo-txt { font-size: .65rem; color: #2a2a2a; }
+  .pending-dot { position: absolute; top: 7px; right: 7px; background: #C8960C; color: #0a0a0a; font-size: .58rem; font-weight: 800; padding: 2px 7px; border-radius: 100px; }
 
-  .photo-info { padding: 8px 10px; }
-  .photo-label { font-size: .8rem; font-weight: 600; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .photo-path { font-size: .64rem; color: #333; font-family: monospace; }
+  .photo-info { padding: 10px 10px 6px; flex: 1; display: flex; flex-direction: column; gap: 5px; }
+  .photo-label { font-size: .8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  .uploading { position: absolute; inset: 0; background: rgba(0,0,0,.85); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; font-size: .78rem; color: #C8960C; z-index: 10; }
+  /* CHAMP ALT */
+  .alt-field { display: flex; flex-direction: column; gap: 3px; }
+  .alt-label { font-size: .62rem; color: #555; text-transform: uppercase; letter-spacing: .06em; display: flex; align-items: center; gap: 4px; }
+  .alt-label span { background: #1e3a1e; color: #4ade80; font-size: .58rem; padding: 1px 5px; border-radius: 3px; font-weight: 700; }
+  .alt-input { width: 100%; background: #0d0d0d; border: 1px solid #1e1e1e; border-radius: 5px; color: #ccc; font-size: .73rem; padding: 5px 7px; outline: none; resize: none; height: 46px; font-family: system-ui; line-height: 1.4; }
+  .alt-input:focus { border-color: #C8960C55; color: #fff; }
+  .alt-input.changed { border-color: #C8960C55; background: #1a1500; }
+
+  /* SPINNER */
+  .uploading { position: absolute; inset: 0; background: rgba(0,0,0,.85); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; font-size: .75rem; color: #C8960C; z-index: 10; }
   .spinner { width: 18px; height: 18px; border: 2px solid #333; border-top-color: #C8960C; border-radius: 50%; animation: spin .7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 10px; font-size: .83rem; font-weight: 600; transform: translateY(80px); opacity: 0; transition: all .3s; z-index: 999; max-width: 400px; }
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 18px; border-radius: 10px; font-size: .82rem; font-weight: 600; transform: translateY(80px); opacity: 0; transition: all .3s; z-index: 999; max-width: 420px; line-height: 1.4; }
   .toast.show { transform: translateY(0); opacity: 1; }
   .toast.success { background: #14532d; border: 1px solid #22c55e; color: #86efac; }
-  .toast.error { background: #450a0a; border: 1px solid #ef4444; color: #fca5a5; }
-  .toast.info { background: #1a1500; border: 1px solid #C8960C55; color: #C8960C; }
+  .toast.error   { background: #450a0a; border: 1px solid #ef4444; color: #fca5a5; }
+  .toast.info    { background: #1a1500; border: 1px solid #C8960C55; color: #C8960C; }
 
   input[type=file] { display: none; }
 </style>
@@ -78,7 +97,7 @@
     <label>Token GitHub</label>
     <input type="password" id="tok" placeholder="ghp_..." onkeydown="if(event.key==='Enter')doLogin()">
     <p class="hint">Token stocké en mémoire de session uniquement.</p>
-    <button class="btn" onclick="doLogin()">Accéder à l'admin</button>
+    <button class="btn-login" onclick="doLogin()">Accéder à l'admin</button>
     <div id="login-error"></div>
   </div>
 </div>
@@ -86,15 +105,17 @@
 <div id="admin">
   <header>
     <h1>📸 Gestion des photos — Atout Film</h1>
-    <div style="display:flex;gap:10px;align-items:center">
-      <div id="pending-badge" style="display:none;background:#C8960C22;border:1px solid #C8960C55;color:#C8960C;padding:5px 12px;border-radius:6px;font-size:.78rem;font-weight:600"></div>
-      <button id="publish-btn" onclick="publishAll()" style="display:none;background:#C8960C;color:#0a0a0a;border:none;padding:8px 18px;border-radius:7px;font-weight:700;font-size:.85rem;cursor:pointer">🚀 Publier les modifications</button>
+    <div class="header-right">
+      <div id="pending-badge"></div>
+      <button id="publish-btn" onclick="publishAll()">🚀 Publier les modifications</button>
       <button class="logout" onclick="logout()">Déconnexion</button>
     </div>
   </header>
   <main>
-    <p class="intro">Glissez une photo sur une carte ou cliquez pour la remplacer.</p>
-    <p class="tip">💡 Glissez autant de photos que vous voulez — elles s'accumulent en prévisualisation locale. Cliquez <strong>"Publier les modifications"</strong> quand vous êtes prêt : un seul déploiement pour tout.</p>
+    <p class="tip">
+      Glissez ou cliquez pour remplacer une photo. Renseignez la <strong>description SEO</strong> pour chaque image (Google l'utilise pour indexer vos photos).
+      Quand vous êtes prêt, cliquez <strong>"Publier"</strong> — toutes les modifications partent en un seul déploiement.
+    </p>
     <div id="content"></div>
   </main>
 </div>
@@ -108,108 +129,68 @@ const REPO = 'alexislecointe28-debug/Atout-Film';
 let TOKEN = '';
 
 const SECTIONS = [
-  {
-    title: '📸 Photos de chantiers — Film Solaire',
-    size: 'wide',
-    photos: [
-      { label: 'Card accueil', path: 'img/fs/1.jpg' },
-      { label: 'Galerie 1', path: 'img/fs/0.jpg' },
-      { label: 'Galerie 2', path: 'img/fs/2.jpg' },
-      { label: 'Galerie 3', path: 'img/fs/3.jpg' },
-      { label: 'Galerie 4', path: 'img/fs/4.jpg' },
-      { label: 'Galerie 5', path: 'img/fs/5.jpg' },
-    ]
-  },
-  {
-    title: '📸 Photos de chantiers — Vitrophanie',
-    size: 'wide',
-    photos: [
-      { label: 'Card accueil', path: 'img/vt/0.jpg' },
-      { label: 'Galerie 1', path: 'img/vt/1.jpg' },
-      { label: 'Galerie 2', path: 'img/vt/2.jpg' },
-      { label: 'Galerie 3', path: 'img/vt/3.jpg' },
-    ]
-  },
-  {
-    title: '📸 Photos de chantiers — Covering',
-    size: 'wide',
-    photos: [
-      { label: 'Card accueil', path: 'img/cv/0.jpg' },
-      { label: 'Galerie 1', path: 'img/cv/1.jpg' },
-      { label: 'Galerie 2', path: 'img/cv/2.jpg' },
-      { label: 'Galerie 3', path: 'img/cv/3.jpg' },
-    ]
-  },
-  {
-    title: '📸 Photos de chantiers — Stores',
-    size: 'wide',
-    photos: [
-      { label: 'Card accueil', path: 'img/st/0.jpg' },
-      { label: 'Galerie 1', path: 'img/st/1.jpg' },
-      { label: 'Galerie 2', path: 'img/st/2.jpg' },
-      { label: 'Galerie 3', path: 'img/st/3.jpg' },
-      { label: 'Galerie 4', path: 'img/st/4.jpg' },
-    ]
-  },
-  {
-    title: '📸 Photos de chantiers — Signalétique',
-    size: 'wide',
-    photos: [
-      { label: 'Galerie 1', path: 'img/sg/0.jpg' },
-      { label: 'Galerie 2', path: 'img/sg/1.jpg' },
-    ]
-  },
-  {
-    title: '🎨 Visuels gamme — Film Solaire (types de films)',
-    size: 'normal',
-    photos: [
-      { label: 'Neutre haute perf.', path: 'img/gamme/fs/0.jpg' },
-      { label: 'Teinté bronze', path: 'img/gamme/fs/1.jpg' },
-      { label: 'Miroir extérieur', path: 'img/gamme/fs/2.jpg' },
-      { label: '3M Prestige', path: 'img/gamme/fs/3.jpg' },
-      { label: 'Film sécurité solaire', path: 'img/gamme/fs/4.jpg' },
-    ]
-  },
-  {
-    title: '🎨 Visuels gamme — Stores (types de stores)',
-    size: 'normal',
-    photos: [
-      { label: 'Stores vénitiens', path: 'img/gamme/st/0.jpg' },
-      { label: 'Stores enrouleurs', path: 'img/gamme/st/1.jpg' },
-      { label: 'Bandes verticales', path: 'img/gamme/st/2.jpg' },
-      { label: 'Stores plissés', path: 'img/gamme/st/3.jpg' },
-    ]
-  },
-  {
-    title: '🎨 Visuels gamme — Vitrophanie (types de films)',
-    size: 'normal',
-    photos: [
-      { label: 'Film dépoli standard', path: 'img/gamme/vt/0.jpg' },
-      { label: 'Impression numérique', path: 'img/gamme/vt/1.jpg' },
-      { label: 'Découpe logo & texte', path: 'img/gamme/vt/2.jpg' },
-      { label: 'Bandes de sécurité', path: 'img/gamme/vt/3.jpg' },
-    ]
-  },
-  {
-    title: '🎨 Finitions Covering (+300 finitions)',
-    size: 'normal',
-    photos: [
-      { label: 'Bois & chêne', path: 'img/finitions/0.jpg' },
-      { label: 'Béton & pierre', path: 'img/finitions/1.jpg' },
-      { label: 'Métal brossé', path: 'img/finitions/2.jpg' },
-      { label: 'Marbre & granit', path: 'img/finitions/3.jpg' },
-      { label: 'Uni mat & satin', path: 'img/finitions/4.jpg' },
-      { label: 'Ardoise & cuir', path: 'img/finitions/5.jpg' },
-    ]
-  },
-  {
-    title: '🏡 Visuels Espace Particuliers',
-    size: 'wide',
-    photos: [
-      { label: 'Offre Covering Cuisine', path: 'img/offres/0.jpg' },
-      { label: 'Offre Film Solaire Véranda', path: 'img/offres/1.jpg' },
-    ]
-  },
+  { title: '📸 Chantiers — Film Solaire', size: 'wide', photos: [
+    { label: 'Card accueil', path: 'img/fs/1.jpg', alt: 'Réalisation film solaire professionnel — Atout Film' },
+    { label: 'Galerie 1', path: 'img/fs/0.jpg', alt: 'Nos réalisations film solaire' },
+    { label: 'Galerie 2', path: 'img/fs/2.jpg', alt: 'Nos réalisations film solaire' },
+    { label: 'Galerie 3', path: 'img/fs/3.jpg', alt: 'Nos réalisations film solaire' },
+    { label: 'Galerie 4', path: 'img/fs/4.jpg', alt: 'Nos réalisations film solaire' },
+    { label: 'Galerie 5', path: 'img/fs/5.jpg', alt: 'Nos réalisations film solaire' },
+  ]},
+  { title: '📸 Chantiers — Vitrophanie', size: 'wide', photos: [
+    { label: 'Card accueil', path: 'img/vt/0.jpg', alt: 'Réalisation vitrophanie professionnelle — Atout Film' },
+    { label: 'Galerie 1', path: 'img/vt/1.jpg', alt: 'Nos réalisations vitrophanie' },
+    { label: 'Galerie 2', path: 'img/vt/2.jpg', alt: 'Nos réalisations vitrophanie' },
+    { label: 'Galerie 3', path: 'img/vt/3.jpg', alt: 'Nos réalisations vitrophanie' },
+  ]},
+  { title: '📸 Chantiers — Covering', size: 'wide', photos: [
+    { label: 'Card accueil', path: 'img/cv/0.jpg', alt: 'Réalisation covering mobilier — Atout Film' },
+    { label: 'Galerie 1', path: 'img/cv/1.jpg', alt: 'Nos réalisations covering' },
+    { label: 'Galerie 2', path: 'img/cv/2.jpg', alt: 'Nos réalisations covering' },
+    { label: 'Galerie 3', path: 'img/cv/3.jpg', alt: 'Nos réalisations covering' },
+  ]},
+  { title: '📸 Chantiers — Stores', size: 'wide', photos: [
+    { label: 'Card accueil', path: 'img/st/0.jpg', alt: 'Réalisation stores intérieurs — Atout Film' },
+    { label: 'Galerie 1', path: 'img/st/1.jpg', alt: 'Nos réalisations stores' },
+    { label: 'Galerie 2', path: 'img/st/2.jpg', alt: 'Nos réalisations stores' },
+    { label: 'Galerie 3', path: 'img/st/3.jpg', alt: 'Nos réalisations stores' },
+    { label: 'Galerie 4', path: 'img/st/4.jpg', alt: 'Nos réalisations stores' },
+  ]},
+  { title: '📸 Chantiers — Signalétique', size: 'wide', photos: [
+    { label: 'Galerie 1', path: 'img/sg/0.jpg', alt: 'Réalisation signalétique adhésive — Atout Film' },
+    { label: 'Galerie 2', path: 'img/sg/1.jpg', alt: 'Nos réalisations signalétique' },
+  ]},
+  { title: '🎨 Gamme — Film Solaire', size: 'normal', photos: [
+    { label: 'Neutre haute perf.', path: 'img/gamme/fs/0.jpg', alt: 'Film solaire neutre haute performance — Atout Film' },
+    { label: 'Teinté bronze', path: 'img/gamme/fs/1.jpg', alt: 'Film solaire teinté bronze — Atout Film' },
+    { label: 'Miroir extérieur', path: 'img/gamme/fs/2.jpg', alt: 'Film solaire miroir extérieur — Atout Film' },
+    { label: '3M Prestige', path: 'img/gamme/fs/3.jpg', alt: 'Film solaire 3M Prestige — Atout Film' },
+    { label: 'Film sécurité solaire', path: 'img/gamme/fs/4.jpg', alt: 'Film sécurité solaire combiné — Atout Film' },
+  ]},
+  { title: '🎨 Gamme — Stores', size: 'normal', photos: [
+    { label: 'Stores vénitiens', path: 'img/gamme/st/0.jpg', alt: 'Stores vénitiens sur mesure — Atout Film' },
+    { label: 'Stores enrouleurs', path: 'img/gamme/st/1.jpg', alt: 'Stores enrouleurs sur mesure — Atout Film' },
+    { label: 'Bandes verticales', path: 'img/gamme/st/2.jpg', alt: 'Bandes verticales occultantes — Atout Film' },
+    { label: 'Stores plissés', path: 'img/gamme/st/3.jpg', alt: 'Stores plissés verrière — Atout Film' },
+  ]},
+  { title: '🎨 Gamme — Vitrophanie', size: 'normal', photos: [
+    { label: 'Film dépoli', path: 'img/gamme/vt/0.jpg', alt: 'Film dépoli professionnel sur vitrage — Atout Film' },
+    { label: 'Impression numérique', path: 'img/gamme/vt/1.jpg', alt: 'Impression numérique sur vitrage — Atout Film' },
+    { label: 'Découpe logo', path: 'img/gamme/vt/2.jpg', alt: 'Découpe logo et lettrage sur vitrage — Atout Film' },
+    { label: 'Bandes sécurité', path: 'img/gamme/vt/3.jpg', alt: 'Bandes de sécurité PMR sur vitrage — Atout Film' },
+  ]},
+  { title: '🎨 Finitions Covering', size: 'normal', photos: [
+    { label: 'Bois & chêne', path: 'img/finitions/0.jpg', alt: 'Covering effet bois chêne — Atout Film' },
+    { label: 'Béton & pierre', path: 'img/finitions/1.jpg', alt: 'Covering effet béton ciré — Atout Film' },
+    { label: 'Métal brossé', path: 'img/finitions/2.jpg', alt: 'Covering effet métal brossé — Atout Film' },
+    { label: 'Marbre & granit', path: 'img/finitions/3.jpg', alt: 'Covering effet marbre granit — Atout Film' },
+    { label: 'Uni mat & satin', path: 'img/finitions/4.jpg', alt: 'Covering uni mat satin — Atout Film' },
+    { label: 'Ardoise & cuir', path: 'img/finitions/5.jpg', alt: 'Covering effet ardoise cuir — Atout Film' },
+  ]},
+  { title: '🏡 Offres Particuliers', size: 'wide', photos: [
+    { label: 'Covering Cuisine', path: 'img/offres/0.jpg', alt: 'Covering cuisine sans démontage — Atout Film' },
+    { label: 'Film Solaire Véranda', path: 'img/offres/1.jpg', alt: 'Film solaire véranda baies vitrées — Atout Film' },
+  ]},
 ];
 
 // LOGIN
@@ -218,7 +199,7 @@ function doLogin() {
   const tok = document.getElementById('tok').value.trim();
   const err = document.getElementById('login-error');
   if (pwd !== PASSWORD) { err.textContent = 'Mot de passe incorrect'; err.style.display='block'; return; }
-  if (!tok.startsWith('ghp_')) { err.textContent = 'Token GitHub invalide'; err.style.display='block'; return; }
+  if (!tok.startsWith('ghp_')) { err.textContent = 'Token GitHub invalide (doit commencer par ghp_)'; err.style.display='block'; return; }
   TOKEN = tok;
   sessionStorage.setItem('af_auth', '1');
   sessionStorage.setItem('af_tok', tok);
@@ -226,9 +207,7 @@ function doLogin() {
   document.getElementById('admin').style.display = 'block';
   buildUI();
 }
-
 function logout() { sessionStorage.clear(); TOKEN = ''; location.reload(); }
-
 if (sessionStorage.getItem('af_auth') && sessionStorage.getItem('af_tok')) {
   TOKEN = sessionStorage.getItem('af_tok');
   document.getElementById('login').style.display = 'none';
@@ -238,6 +217,8 @@ if (sessionStorage.getItem('af_auth') && sessionStorage.getItem('af_tok')) {
 
 let allPhotos = [];
 let currentIdx = null;
+// Modifications en attente : { path -> { b64, newAlt, label, altOnly } }
+const pending = {};
 
 function buildUI() {
   allPhotos = [];
@@ -245,92 +226,98 @@ function buildUI() {
   content.innerHTML = '';
 
   SECTIONS.forEach(section => {
-    const sec = document.createElement('div');
-    sec.innerHTML = `<div class="section-title">${section.title}</div>`;
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<div class="section-title">${section.title}</div>`;
     const grid = document.createElement('div');
     grid.className = 'grid' + (section.size === 'wide' ? ' wide' : '');
-    
+
     section.photos.forEach(photo => {
       const idx = allPhotos.length;
-      allPhotos.push(photo);
-      
+      allPhotos.push({...photo});
+
       const card = document.createElement('div');
       card.className = 'photo-card';
       card.id = 'card-' + idx;
       card.innerHTML = `
         <div class="photo-preview ${section.size === 'wide' ? 'tall' : 'short'}">
-          <img src="${photo.path}?t=${Date.now()}" alt="${photo.label}" 
-               style="display:none"
-               onload="this.style.display='block'"
+          <img src="${photo.path}?t=${Date.now()}" alt="${photo.alt}"
+               onload="this.style.display='block';this.closest('.photo-preview').querySelector('.no-photo').style.display='none'"
                onerror="this.style.display='none'">
-          <div class="photo-overlay"><span>📂</span>Glisser ou cliquer</div>
-          <div class="no-photo" style="height:100%;width:100%;position:absolute;inset:0;display:flex">
-            <span class="no-photo-icon">🖼️</span>
-            <span style="font-size:.68rem;color:#2a2a2a">Pas de photo</span>
-          </div>
+          <div class="no-photo"><div class="no-photo-icon">🖼️</div><div class="no-photo-txt">Pas de photo</div></div>
+          <div class="photo-overlay">📂 Glisser ou cliquer</div>
         </div>
         <div class="photo-info">
           <div class="photo-label">${photo.label}</div>
-          <div class="photo-path">${photo.path}</div>
+          <div class="alt-field">
+            <div class="alt-label">Description SEO <span>ALT</span></div>
+            <textarea class="alt-input" id="alt-${idx}" placeholder="Ex: Film solaire posé sur façade bureau Lille..."
+              onchange="onAltChange(${idx})" oninput="onAltChange(${idx})"
+            >${photo.alt}</textarea>
+          </div>
         </div>`;
-      
-      // Cacher le placeholder quand l'image charge
-      const img = card.querySelector('img');
-      img.addEventListener('load', () => {
-        card.querySelector('.no-photo').style.display = 'none';
-      });
-      
-      card.onclick = () => openFile(idx);
+
+      card.querySelector('.photo-preview').onclick = () => openFile(idx);
       card.ondragover = e => { e.preventDefault(); card.classList.add('drag-over'); };
       card.ondragleave = () => card.classList.remove('drag-over');
-      card.ondrop = e => { e.preventDefault(); card.classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f?.type.startsWith('image/')) upload(idx, f); };
-      
+      card.ondrop = e => { e.preventDefault(); card.classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f?.type.startsWith('image/')) stagePhoto(idx, f); };
+
       grid.appendChild(card);
     });
-    
-    sec.appendChild(grid);
-    content.appendChild(sec);
+
+    wrap.appendChild(grid);
+    content.appendChild(wrap);
   });
 }
 
+// Quand l'alt est modifié
+function onAltChange(idx) {
+  const newAlt = document.getElementById('alt-' + idx).value.trim();
+  const photo = allPhotos[idx];
+  if (newAlt === photo.alt) {
+    // Revenu à l'original — retirer si c'était uniquement un alt pending
+    if (pending[photo.path] && pending[photo.path].altOnly) {
+      delete pending[photo.path];
+    }
+    document.getElementById('alt-' + idx).classList.remove('changed');
+  } else {
+    document.getElementById('alt-' + idx).classList.add('changed');
+    if (!pending[photo.path]) {
+      pending[photo.path] = { altOnly: true, newAlt, label: photo.label };
+    } else {
+      pending[photo.path].newAlt = newAlt;
+    }
+  }
+  updatePendingUI();
+}
+
+// Stage une photo (preview local, pas encore pushé)
 function openFile(idx) { currentIdx = idx; document.getElementById('file-input').click(); }
 document.getElementById('file-input').addEventListener('change', e => {
-  if (e.target.files[0]) upload(currentIdx, e.target.files[0]);
+  if (e.target.files[0]) stagePhoto(currentIdx, e.target.files[0]);
   e.target.value = '';
 });
 
-// Stockage des modifications en attente
-const pending = {}; // path -> {b64, file, label}
-
-async function upload(idx, file) {
+async function stagePhoto(idx, file) {
   const photo = allPhotos[idx];
-  const card = document.getElementById('card-' + idx);
-  const preview = card.querySelector('.photo-preview');
-
-  // Lire le fichier en base64
   const b64 = await new Promise((res, rej) => {
     const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.onerror = rej; r.readAsDataURL(file);
   });
 
-  // Stocker en attente
-  pending[photo.path] = { b64, file, label: photo.label };
-
-  // Preview local immédiat
+  // Preview local
   const url = URL.createObjectURL(file);
+  const card = document.getElementById('card-' + idx);
   const img = card.querySelector('img');
-  img.src = url;
-  img.style.display = 'block';
+  img.src = url; img.style.display = 'block';
   card.querySelector('.no-photo').style.display = 'none';
 
-  // Ajouter indicateur "modifié"
-  let badge = card.querySelector('.modified-badge');
-  if (!badge) {
-    badge = document.createElement('div');
-    badge.className = 'modified-badge';
-    badge.style.cssText = 'position:absolute;top:6px;right:6px;background:#C8960C;color:#0a0a0a;font-size:.6rem;font-weight:800;padding:2px 7px;border-radius:100px;z-index:5';
-    badge.textContent = '● À publier';
-    preview.appendChild(badge);
-  }
+  // Stocker en attente
+  const currentAlt = document.getElementById('alt-' + idx).value.trim();
+  pending[photo.path] = { b64, altOnly: false, newAlt: currentAlt, label: photo.label };
+  card.classList.add('pending');
+
+  // Dot
+  let dot = card.querySelector('.pending-dot');
+  if (!dot) { dot = document.createElement('div'); dot.className = 'pending-dot'; dot.textContent = '● À publier'; card.querySelector('.photo-preview').appendChild(dot); }
 
   updatePendingUI();
   toast('info', `📋 "${photo.label}" prête — cliquez "Publier" pour mettre en ligne`);
@@ -341,7 +328,7 @@ function updatePendingUI() {
   const badge = document.getElementById('pending-badge');
   const btn = document.getElementById('publish-btn');
   if (count > 0) {
-    badge.textContent = `${count} photo${count > 1 ? 's' : ''} en attente`;
+    badge.textContent = `${count} modification${count > 1 ? 's' : ''} en attente`;
     badge.style.display = 'block';
     btn.style.display = 'block';
   } else {
@@ -350,69 +337,114 @@ function updatePendingUI() {
   }
 }
 
+// Publier tout en une fois
 async function publishAll() {
   const entries = Object.entries(pending);
   if (!entries.length) return;
 
   const btn = document.getElementById('publish-btn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Publication...';
+  btn.disabled = true; btn.textContent = `⏳ Publication 0/${entries.length}...`;
+
+  // 1. Récupérer index.html actuel pour mettre à jour les alt
+  let indexContent = null, indexSha = null;
+  try {
+    const r = await fetch(`https://api.github.com/repos/${REPO}/contents/index.html`, { headers: { Authorization: `token ${TOKEN}` }});
+    const d = await r.json();
+    indexSha = d.sha;
+    // Décoder
+    const b64 = d.content.replace(/\n/g,'');
+    const binary = Array.from(atob(b64), c => c.charCodeAt(0));
+    indexContent = new TextDecoder('utf-8').decode(new Uint8Array(binary));
+  } catch(e) {
+    toast('error', '❌ Impossible de lire index.html : ' + e.message);
+    btn.disabled = false; btn.textContent = '🚀 Publier les modifications';
+    return;
+  }
 
   let done = 0, errors = 0;
 
-  for (const [path, { b64, label }] of entries) {
+  for (const [path, change] of entries) {
     try {
-      // Récupérer le SHA actuel
-      let sha = null;
-      try {
-        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, { headers: { Authorization: `token ${TOKEN}` } });
-        if (r.ok) sha = (await r.json()).sha;
-      } catch(e) {}
-
-      const body = { message: `photo: update ${path}`, content: b64 };
-      if (sha) body.sha = sha;
-
-      const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
-        method: 'PUT',
-        headers: { Authorization: `token ${TOKEN}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      const data = await res.json();
-
-      if (data.commit) {
-        delete pending[path];
-        // Retirer le badge "À publier" sur la card correspondante
-        allPhotos.forEach((p, idx) => {
-          if (p.path === path) {
-            const card = document.getElementById('card-' + idx);
-            card?.querySelector('.modified-badge')?.remove();
-          }
-        });
-        done++;
-      } else {
-        errors++;
+      // Mettre à jour le alt dans index.html si nécessaire
+      if (change.newAlt !== undefined && change.newAlt !== null) {
+        // Remplacer alt="..." pour toutes les occurrences de cette image
+        const escaped = path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        indexContent = indexContent.replace(
+          new RegExp(`(<img[^>]*src="${escaped}"[^>]*?)alt="[^"]*"`, 'g'),
+          `$1alt="${change.newAlt}"`
+        );
+        indexContent = indexContent.replace(
+          new RegExp(`(<img[^>]*?)alt="[^"]*"([^>]*src="${escaped}")`, 'g'),
+          `$1alt="${change.newAlt}"$2`
+        );
       }
-    } catch(e) {
-      errors++;
-    }
-    btn.textContent = `⏳ ${done}/${entries.length}...`;
+
+      // Uploader le fichier image (si pas altOnly)
+      if (!change.altOnly) {
+        let sha = null;
+        try {
+          const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, { headers: { Authorization: `token ${TOKEN}` }});
+          if (r.ok) sha = (await r.json()).sha;
+        } catch(e) {}
+
+        const body = { message: `photo: update ${path}`, content: change.b64 };
+        if (sha) body.sha = sha;
+        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+          method: 'PUT',
+          headers: { Authorization: `token ${TOKEN}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        if (!data.commit) { errors++; continue; }
+      }
+
+      done++;
+      btn.textContent = `⏳ ${done}/${entries.length}...`;
+    } catch(e) { errors++; }
+  }
+
+  // 2. Pousser index.html avec les nouveaux alt
+  try {
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(indexContent);
+    let binary = '';
+    for (let i = 0; i < bytes.length; i += 32768) binary += String.fromCharCode(...bytes.slice(i, i+32768));
+    const newB64 = btoa(binary);
+
+    await fetch(`https://api.github.com/repos/${REPO}/contents/index.html`, {
+      method: 'PUT',
+      headers: { Authorization: `token ${TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'seo: update image alt attributes', content: newB64, sha: indexSha })
+    });
+  } catch(e) {
+    toast('error', '❌ Erreur mise à jour index.html : ' + e.message);
+  }
+
+  // Nettoyer
+  for (const path of Object.keys(pending)) {
+    delete pending[path];
+    allPhotos.forEach((p, idx) => {
+      if (p.path === path) {
+        document.getElementById('card-'+idx)?.classList.remove('pending');
+        document.getElementById('card-'+idx)?.querySelector('.pending-dot')?.remove();
+        // Mettre à jour l'alt stocké
+        const newAlt = document.getElementById('alt-'+idx)?.value;
+        if (newAlt) allPhotos[idx].alt = newAlt;
+        document.getElementById('alt-'+idx)?.classList.remove('changed');
+      }
+    });
   }
 
   btn.disabled = false;
   updatePendingUI();
 
-  if (errors === 0) {
-    toast('success', `✅ ${done} photo${done > 1 ? 's' : ''} publiée${done > 1 ? 's' : ''} — Vercel redéploie en ~30s`);
-  } else {
-    toast('error', `⚠️ ${done} réussie(s), ${errors} erreur(s)`);
-  }
+  if (errors === 0) toast('success', `✅ ${done} modification${done>1?'s':''} publiée${done>1?'s':''} — Vercel redéploie en ~30s`);
+  else toast('error', `⚠️ ${done} réussie(s), ${errors} erreur(s)`);
 }
 
 function toast(type, msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  const colors = { success: 'toast show success', error: 'toast show error', info: 'toast show info' };
-  t.className = colors[type] || 'toast show info';
+  t.textContent = msg; t.className = `toast show ${type}`;
   setTimeout(() => t.className = 'toast', 6000);
 }
 </script>
