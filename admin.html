@@ -62,6 +62,7 @@
   .toast.show { transform: translateY(0); opacity: 1; }
   .toast.success { background: #14532d; border: 1px solid #22c55e; color: #86efac; }
   .toast.error { background: #450a0a; border: 1px solid #ef4444; color: #fca5a5; }
+  .toast.info { background: #1a1500; border: 1px solid #C8960C55; color: #C8960C; }
 
   input[type=file] { display: none; }
 </style>
@@ -85,11 +86,15 @@
 <div id="admin">
   <header>
     <h1>📸 Gestion des photos — Atout Film</h1>
-    <button class="logout" onclick="logout()">Déconnexion</button>
+    <div style="display:flex;gap:10px;align-items:center">
+      <div id="pending-badge" style="display:none;background:#C8960C22;border:1px solid #C8960C55;color:#C8960C;padding:5px 12px;border-radius:6px;font-size:.78rem;font-weight:600"></div>
+      <button id="publish-btn" onclick="publishAll()" style="display:none;background:#C8960C;color:#0a0a0a;border:none;padding:8px 18px;border-radius:7px;font-weight:700;font-size:.85rem;cursor:pointer">🚀 Publier les modifications</button>
+      <button class="logout" onclick="logout()">Déconnexion</button>
+    </div>
   </header>
   <main>
     <p class="intro">Glissez une photo sur une carte ou cliquez pour la remplacer.</p>
-    <p class="tip">💡 Le fond coloré/emoji reste affiché tant qu'aucune photo n'est uploadée. Une fois une photo ajoutée, elle remplace le fond. Vercel redéploie automatiquement en ~30s.</p>
+    <p class="tip">💡 Glissez autant de photos que vous voulez — elles s'accumulent en prévisualisation locale. Cliquez <strong>"Publier les modifications"</strong> quand vous êtes prêt : un seul déploiement pour tout.</p>
     <div id="content"></div>
   </main>
 </div>
@@ -294,57 +299,120 @@ document.getElementById('file-input').addEventListener('change', e => {
   e.target.value = '';
 });
 
+// Stockage des modifications en attente
+const pending = {}; // path -> {b64, file, label}
+
 async function upload(idx, file) {
   const photo = allPhotos[idx];
   const card = document.getElementById('card-' + idx);
   const preview = card.querySelector('.photo-preview');
 
-  const uploading = document.createElement('div');
-  uploading.className = 'uploading';
-  uploading.innerHTML = '<div class="spinner"></div><span>Upload...</span>';
-  preview.appendChild(uploading);
+  // Lire le fichier en base64
+  const b64 = await new Promise((res, rej) => {
+    const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.onerror = rej; r.readAsDataURL(file);
+  });
 
-  try {
-    const b64 = await new Promise((res, rej) => {
-      const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.onerror = rej; r.readAsDataURL(file);
-    });
+  // Stocker en attente
+  pending[photo.path] = { b64, file, label: photo.label };
 
-    let sha = null;
+  // Preview local immédiat
+  const url = URL.createObjectURL(file);
+  const img = card.querySelector('img');
+  img.src = url;
+  img.style.display = 'block';
+  card.querySelector('.no-photo').style.display = 'none';
+
+  // Ajouter indicateur "modifié"
+  let badge = card.querySelector('.modified-badge');
+  if (!badge) {
+    badge = document.createElement('div');
+    badge.className = 'modified-badge';
+    badge.style.cssText = 'position:absolute;top:6px;right:6px;background:#C8960C;color:#0a0a0a;font-size:.6rem;font-weight:800;padding:2px 7px;border-radius:100px;z-index:5';
+    badge.textContent = '● À publier';
+    preview.appendChild(badge);
+  }
+
+  updatePendingUI();
+  toast('info', `📋 "${photo.label}" prête — cliquez "Publier" pour mettre en ligne`);
+}
+
+function updatePendingUI() {
+  const count = Object.keys(pending).length;
+  const badge = document.getElementById('pending-badge');
+  const btn = document.getElementById('publish-btn');
+  if (count > 0) {
+    badge.textContent = `${count} photo${count > 1 ? 's' : ''} en attente`;
+    badge.style.display = 'block';
+    btn.style.display = 'block';
+  } else {
+    badge.style.display = 'none';
+    btn.style.display = 'none';
+  }
+}
+
+async function publishAll() {
+  const entries = Object.entries(pending);
+  if (!entries.length) return;
+
+  const btn = document.getElementById('publish-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Publication...';
+
+  let done = 0, errors = 0;
+
+  for (const [path, { b64, label }] of entries) {
     try {
-      const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${photo.path}`, { headers: { Authorization: `token ${TOKEN}` } });
-      if (r.ok) sha = (await r.json()).sha;
-    } catch(e) {}
+      // Récupérer le SHA actuel
+      let sha = null;
+      try {
+        const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, { headers: { Authorization: `token ${TOKEN}` } });
+        if (r.ok) sha = (await r.json()).sha;
+      } catch(e) {}
 
-    const body = { message: `photo: update ${photo.path}`, content: b64 };
-    if (sha) body.sha = sha;
+      const body = { message: `photo: update ${path}`, content: b64 };
+      if (sha) body.sha = sha;
 
-    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${photo.path}`, {
-      method: 'PUT',
-      headers: { Authorization: `token ${TOKEN}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    });
-    const data = await res.json();
-    uploading.remove();
+      const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+        method: 'PUT',
+        headers: { Authorization: `token ${TOKEN}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
 
-    if (data.commit) {
-      const url = URL.createObjectURL(file);
-      const img = card.querySelector('img');
-      img.src = url;
-      img.style.display = 'block';
-      card.querySelector('.no-photo').style.display = 'none';
-      toast('success', `✅ "${photo.label}" mis à jour — site en ligne dans ~30s`);
-    } else {
-      toast('error', `❌ ${data.message}`);
+      if (data.commit) {
+        delete pending[path];
+        // Retirer le badge "À publier" sur la card correspondante
+        allPhotos.forEach((p, idx) => {
+          if (p.path === path) {
+            const card = document.getElementById('card-' + idx);
+            card?.querySelector('.modified-badge')?.remove();
+          }
+        });
+        done++;
+      } else {
+        errors++;
+      }
+    } catch(e) {
+      errors++;
     }
-  } catch(e) {
-    uploading?.remove();
-    toast('error', `❌ ${e.message}`);
+    btn.textContent = `⏳ ${done}/${entries.length}...`;
+  }
+
+  btn.disabled = false;
+  updatePendingUI();
+
+  if (errors === 0) {
+    toast('success', `✅ ${done} photo${done > 1 ? 's' : ''} publiée${done > 1 ? 's' : ''} — Vercel redéploie en ~30s`);
+  } else {
+    toast('error', `⚠️ ${done} réussie(s), ${errors} erreur(s)`);
   }
 }
 
 function toast(type, msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast show ' + type;
+  t.textContent = msg;
+  const colors = { success: 'toast show success', error: 'toast show error', info: 'toast show info' };
+  t.className = colors[type] || 'toast show info';
   setTimeout(() => t.className = 'toast', 6000);
 }
 </script>
