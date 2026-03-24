@@ -21,38 +21,44 @@
   .hint { font-size: .72rem; color: #444; margin-top: 8px; line-height: 1.5; }
 
   #admin { display: none; }
-  header { background: #111; border-bottom: 1px solid #1e1e1e; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; }
+  header { background: #111; border-bottom: 1px solid #1e1e1e; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
   header h1 { font-size: .97rem; color: #C8960C; font-weight: 700; }
   .logout { background: none; border: 1px solid #2a2a2a; color: #555; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: .8rem; }
   .logout:hover { border-color: #C8960C; color: #C8960C; }
 
-  main { max-width: 1100px; margin: 0 auto; padding: 28px; }
-  .intro { color: #555; font-size: .85rem; margin-bottom: 24px; }
+  main { max-width: 1200px; margin: 0 auto; padding: 28px; }
+  .intro { color: #555; font-size: .85rem; margin-bottom: 8px; }
+  .tip { background: #1a1500; border: 1px solid #C8960C33; border-radius: 8px; padding: 10px 14px; font-size: .78rem; color: #C8960C99; margin-bottom: 28px; }
 
-  .section-title { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: #444; margin: 28px 0 14px; padding-bottom: 8px; border-bottom: 1px solid #1e1e1e; }
+  .section-title { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: #C8960C; margin: 32px 0 14px; padding-bottom: 8px; border-bottom: 1px solid #1e1e1e; display: flex; align-items: center; gap: 8px; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .grid.wide { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 
   .photo-card { background: #141414; border: 1px solid #1e1e1e; border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color .2s; }
   .photo-card:hover { border-color: #C8960C55; }
   .photo-card.drag-over { border-color: #C8960C; background: #1a1500; }
 
-  .photo-preview { height: 150px; position: relative; background: #0d0d0d; overflow: hidden; }
+  .photo-preview { position: relative; background: #0d0d0d; overflow: hidden; }
+  .photo-preview.tall { height: 120px; }
+  .photo-preview.short { height: 90px; }
   .photo-preview img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .2s; }
   .photo-card:hover .photo-preview img { opacity: .7; }
-  .photo-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; font-size: .8rem; color: #fff; text-align: center; gap: 6px; flex-direction: column; }
+  .photo-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; font-size: .78rem; color: #fff; text-align: center; gap: 5px; flex-direction: column; background: rgba(0,0,0,.3); }
   .photo-card:hover .photo-overlay { opacity: 1; }
-  .photo-overlay span { font-size: 1.4rem; }
+  .photo-overlay span { font-size: 1.3rem; }
+  .no-photo { display: flex; align-items: center; justify-content: center; color: #2a2a2a; font-size: .75rem; flex-direction: column; gap: 6px; }
+  .no-photo-icon { font-size: 1.6rem; opacity: .4; }
 
-  .photo-info { padding: 10px 12px; }
-  .photo-label { font-size: .84rem; font-weight: 600; margin-bottom: 2px; }
-  .photo-path { font-size: .68rem; color: #3a3a3a; font-family: monospace; }
+  .photo-info { padding: 8px 10px; }
+  .photo-label { font-size: .8rem; font-weight: 600; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .photo-path { font-size: .64rem; color: #333; font-family: monospace; }
 
-  .uploading { position: absolute; inset: 0; background: rgba(0,0,0,.8); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; font-size: .8rem; color: #C8960C; }
-  .spinner { width: 20px; height: 20px; border: 2px solid #333; border-top-color: #C8960C; border-radius: 50%; animation: spin .7s linear infinite; }
+  .uploading { position: absolute; inset: 0; background: rgba(0,0,0,.85); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; font-size: .78rem; color: #C8960C; z-index: 10; }
+  .spinner { width: 18px; height: 18px; border: 2px solid #333; border-top-color: #C8960C; border-radius: 50%; animation: spin .7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 10px; font-size: .85rem; font-weight: 600; transform: translateY(80px); opacity: 0; transition: all .3s; z-index: 999; }
+  .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 10px; font-size: .83rem; font-weight: 600; transform: translateY(80px); opacity: 0; transition: all .3s; z-index: 999; max-width: 400px; }
   .toast.show { transform: translateY(0); opacity: 1; }
   .toast.success { background: #14532d; border: 1px solid #22c55e; color: #86efac; }
   .toast.error { background: #450a0a; border: 1px solid #ef4444; color: #fca5a5; }
@@ -65,14 +71,14 @@
 <div id="login">
   <div class="login-card">
     <h1>🔐 Admin — Atout Film</h1>
-    <p>Gestion des photos du site. Entrez le mot de passe et votre token GitHub.</p>
+    <p>Gestion des photos et visuels du site.</p>
     <label>Mot de passe</label>
     <input type="password" id="pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')document.getElementById('tok').focus()">
     <label>Token GitHub</label>
     <input type="password" id="tok" placeholder="ghp_..." onkeydown="if(event.key==='Enter')doLogin()">
-    <p class="hint">Le token est stocké uniquement en mémoire de session, jamais sauvegardé.</p>
+    <p class="hint">Token stocké en mémoire de session uniquement.</p>
     <button class="btn" onclick="doLogin()">Accéder à l'admin</button>
-    <div id="login-error">Mot de passe incorrect</div>
+    <div id="login-error"></div>
   </div>
 </div>
 
@@ -82,7 +88,8 @@
     <button class="logout" onclick="logout()">Déconnexion</button>
   </header>
   <main>
-    <p class="intro">Glissez une photo sur une carte ou cliquez dessus pour la remplacer. Le site se met à jour automatiquement sur Vercel (~30 secondes).</p>
+    <p class="intro">Glissez une photo sur une carte ou cliquez pour la remplacer.</p>
+    <p class="tip">💡 Le fond coloré/emoji reste affiché tant qu'aucune photo n'est uploadée. Une fois une photo ajoutée, elle remplace le fond. Vercel redéploie automatiquement en ~30s.</p>
     <div id="content"></div>
   </main>
 </div>
@@ -93,82 +100,132 @@
 <script>
 const PASSWORD = 'atoutfilm2025';
 const REPO = 'alexislecointe28-debug/Atout-Film';
-let GITHUB_TOKEN = '';
+let TOKEN = '';
 
 const SECTIONS = [
   {
-    title: '☀️ Film Solaire',
+    title: '📸 Photos de chantiers — Film Solaire',
+    size: 'wide',
     photos: [
       { label: 'Card accueil', path: 'img/fs/1.jpg' },
-      { label: 'Galerie — Photo 1', path: 'img/fs/0.jpg' },
-      { label: 'Galerie — Photo 2', path: 'img/fs/2.jpg' },
-      { label: 'Galerie — Photo 3', path: 'img/fs/3.jpg' },
-      { label: 'Galerie — Photo 4', path: 'img/fs/4.jpg' },
-      { label: 'Galerie — Photo 5', path: 'img/fs/5.jpg' },
+      { label: 'Galerie 1', path: 'img/fs/0.jpg' },
+      { label: 'Galerie 2', path: 'img/fs/2.jpg' },
+      { label: 'Galerie 3', path: 'img/fs/3.jpg' },
+      { label: 'Galerie 4', path: 'img/fs/4.jpg' },
+      { label: 'Galerie 5', path: 'img/fs/5.jpg' },
     ]
   },
   {
-    title: '🪟 Vitrophanie',
+    title: '📸 Photos de chantiers — Vitrophanie',
+    size: 'wide',
     photos: [
       { label: 'Card accueil', path: 'img/vt/0.jpg' },
-      { label: 'Galerie — Photo 1', path: 'img/vt/1.jpg' },
-      { label: 'Galerie — Photo 2', path: 'img/vt/2.jpg' },
-      { label: 'Galerie — Photo 3', path: 'img/vt/3.jpg' },
+      { label: 'Galerie 1', path: 'img/vt/1.jpg' },
+      { label: 'Galerie 2', path: 'img/vt/2.jpg' },
+      { label: 'Galerie 3', path: 'img/vt/3.jpg' },
     ]
   },
   {
-    title: '✨ Covering',
+    title: '📸 Photos de chantiers — Covering',
+    size: 'wide',
     photos: [
       { label: 'Card accueil', path: 'img/cv/0.jpg' },
-      { label: 'Galerie — Photo 1', path: 'img/cv/1.jpg' },
-      { label: 'Galerie — Photo 2', path: 'img/cv/2.jpg' },
-      { label: 'Galerie — Photo 3', path: 'img/cv/3.jpg' },
+      { label: 'Galerie 1', path: 'img/cv/1.jpg' },
+      { label: 'Galerie 2', path: 'img/cv/2.jpg' },
+      { label: 'Galerie 3', path: 'img/cv/3.jpg' },
     ]
   },
   {
-    title: '🏠 Stores',
+    title: '📸 Photos de chantiers — Stores',
+    size: 'wide',
     photos: [
       { label: 'Card accueil', path: 'img/st/0.jpg' },
-      { label: 'Galerie — Photo 1', path: 'img/st/1.jpg' },
-      { label: 'Galerie — Photo 2', path: 'img/st/2.jpg' },
-      { label: 'Galerie — Photo 3', path: 'img/st/3.jpg' },
-      { label: 'Galerie — Photo 4', path: 'img/st/4.jpg' },
+      { label: 'Galerie 1', path: 'img/st/1.jpg' },
+      { label: 'Galerie 2', path: 'img/st/2.jpg' },
+      { label: 'Galerie 3', path: 'img/st/3.jpg' },
+      { label: 'Galerie 4', path: 'img/st/4.jpg' },
     ]
   },
   {
-    title: '🏷️ Signalétique',
+    title: '📸 Photos de chantiers — Signalétique',
+    size: 'wide',
     photos: [
-      { label: 'Galerie — Photo 1', path: 'img/sg/0.jpg' },
-      { label: 'Galerie — Photo 2', path: 'img/sg/1.jpg' },
+      { label: 'Galerie 1', path: 'img/sg/0.jpg' },
+      { label: 'Galerie 2', path: 'img/sg/1.jpg' },
+    ]
+  },
+  {
+    title: '🎨 Visuels gamme — Film Solaire (types de films)',
+    size: 'normal',
+    photos: [
+      { label: 'Neutre haute perf.', path: 'img/gamme/fs/0.jpg' },
+      { label: 'Teinté bronze', path: 'img/gamme/fs/1.jpg' },
+      { label: 'Miroir extérieur', path: 'img/gamme/fs/2.jpg' },
+      { label: '3M Prestige', path: 'img/gamme/fs/3.jpg' },
+      { label: 'Film sécurité solaire', path: 'img/gamme/fs/4.jpg' },
+    ]
+  },
+  {
+    title: '🎨 Visuels gamme — Stores (types de stores)',
+    size: 'normal',
+    photos: [
+      { label: 'Stores vénitiens', path: 'img/gamme/st/0.jpg' },
+      { label: 'Stores enrouleurs', path: 'img/gamme/st/1.jpg' },
+      { label: 'Bandes verticales', path: 'img/gamme/st/2.jpg' },
+      { label: 'Stores plissés', path: 'img/gamme/st/3.jpg' },
+    ]
+  },
+  {
+    title: '🎨 Visuels gamme — Vitrophanie (types de films)',
+    size: 'normal',
+    photos: [
+      { label: 'Film dépoli standard', path: 'img/gamme/vt/0.jpg' },
+      { label: 'Impression numérique', path: 'img/gamme/vt/1.jpg' },
+      { label: 'Découpe logo & texte', path: 'img/gamme/vt/2.jpg' },
+      { label: 'Bandes de sécurité', path: 'img/gamme/vt/3.jpg' },
+    ]
+  },
+  {
+    title: '🎨 Finitions Covering (+300 finitions)',
+    size: 'normal',
+    photos: [
+      { label: 'Bois & chêne', path: 'img/finitions/0.jpg' },
+      { label: 'Béton & pierre', path: 'img/finitions/1.jpg' },
+      { label: 'Métal brossé', path: 'img/finitions/2.jpg' },
+      { label: 'Marbre & granit', path: 'img/finitions/3.jpg' },
+      { label: 'Uni mat & satin', path: 'img/finitions/4.jpg' },
+      { label: 'Ardoise & cuir', path: 'img/finitions/5.jpg' },
+    ]
+  },
+  {
+    title: '🏡 Visuels Espace Particuliers',
+    size: 'wide',
+    photos: [
+      { label: 'Offre Covering Cuisine', path: 'img/offres/0.jpg' },
+      { label: 'Offre Film Solaire Véranda', path: 'img/offres/1.jpg' },
     ]
   },
 ];
 
+// LOGIN
 function doLogin() {
   const pwd = document.getElementById('pwd').value;
   const tok = document.getElementById('tok').value.trim();
-  if (pwd === PASSWORD && tok.startsWith('ghp_')) {
-    GITHUB_TOKEN = tok;
-    sessionStorage.setItem('admin_auth', '1');
-    sessionStorage.setItem('admin_tok', tok);
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('admin').style.display = 'block';
-    buildUI();
-  } else {
-    document.getElementById('login-error').style.display = 'block';
-    document.getElementById('login-error').textContent = pwd !== PASSWORD ? 'Mot de passe incorrect' : 'Token GitHub invalide (doit commencer par ghp_)';
-  }
+  const err = document.getElementById('login-error');
+  if (pwd !== PASSWORD) { err.textContent = 'Mot de passe incorrect'; err.style.display='block'; return; }
+  if (!tok.startsWith('ghp_')) { err.textContent = 'Token GitHub invalide'; err.style.display='block'; return; }
+  TOKEN = tok;
+  sessionStorage.setItem('af_auth', '1');
+  sessionStorage.setItem('af_tok', tok);
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('admin').style.display = 'block';
+  buildUI();
 }
 
-function logout() {
-  sessionStorage.clear();
-  GITHUB_TOKEN = '';
-  location.reload();
-}
+function logout() { sessionStorage.clear(); TOKEN = ''; location.reload(); }
 
-// Restore session
-if (sessionStorage.getItem('admin_auth') && sessionStorage.getItem('admin_tok')) {
-  GITHUB_TOKEN = sessionStorage.getItem('admin_tok');
+if (sessionStorage.getItem('af_auth') && sessionStorage.getItem('af_tok')) {
+  TOKEN = sessionStorage.getItem('af_tok');
   document.getElementById('login').style.display = 'none';
   document.getElementById('admin').style.display = 'block';
   buildUI();
@@ -183,40 +240,55 @@ function buildUI() {
   content.innerHTML = '';
 
   SECTIONS.forEach(section => {
-    content.innerHTML += `<div class="section-title">${section.title}</div><div class="grid" id="grid-${section.title.replace(/[^a-z]/gi,'_')}"></div>`;
+    const sec = document.createElement('div');
+    sec.innerHTML = `<div class="section-title">${section.title}</div>`;
+    const grid = document.createElement('div');
+    grid.className = 'grid' + (section.size === 'wide' ? ' wide' : '');
+    
     section.photos.forEach(photo => {
+      const idx = allPhotos.length;
       allPhotos.push(photo);
+      
+      const card = document.createElement('div');
+      card.className = 'photo-card';
+      card.id = 'card-' + idx;
+      card.innerHTML = `
+        <div class="photo-preview ${section.size === 'wide' ? 'tall' : 'short'}">
+          <img src="${photo.path}?t=${Date.now()}" alt="${photo.label}" 
+               style="display:none"
+               onload="this.style.display='block'"
+               onerror="this.style.display='none'">
+          <div class="photo-overlay"><span>📂</span>Glisser ou cliquer</div>
+          <div class="no-photo" style="height:100%;width:100%;position:absolute;inset:0;display:flex">
+            <span class="no-photo-icon">🖼️</span>
+            <span style="font-size:.68rem;color:#2a2a2a">Pas de photo</span>
+          </div>
+        </div>
+        <div class="photo-info">
+          <div class="photo-label">${photo.label}</div>
+          <div class="photo-path">${photo.path}</div>
+        </div>`;
+      
+      // Cacher le placeholder quand l'image charge
+      const img = card.querySelector('img');
+      img.addEventListener('load', () => {
+        card.querySelector('.no-photo').style.display = 'none';
+      });
+      
+      card.onclick = () => openFile(idx);
+      card.ondragover = e => { e.preventDefault(); card.classList.add('drag-over'); };
+      card.ondragleave = () => card.classList.remove('drag-over');
+      card.ondrop = e => { e.preventDefault(); card.classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f?.type.startsWith('image/')) upload(idx, f); };
+      
+      grid.appendChild(card);
     });
-  });
-
-  allPhotos.forEach((photo, idx) => {
-    const sectionKey = SECTIONS.find(s => s.photos.includes(photo)).title.replace(/[^a-z]/gi,'_');
-    const grid = document.getElementById('grid-'+sectionKey);
-    const card = document.createElement('div');
-    card.className = 'photo-card';
-    card.id = 'card-'+idx;
-    card.innerHTML = `
-      <div class="photo-preview">
-        <img src="${photo.path}?t=${Date.now()}" alt="${photo.label}" 
-             onerror="this.style.display='none'">
-        <div class="photo-overlay"><span>📂</span>Glisser ou cliquer</div>
-      </div>
-      <div class="photo-info">
-        <div class="photo-label">${photo.label}</div>
-        <div class="photo-path">${photo.path}</div>
-      </div>`;
-    card.onclick = () => openFile(idx);
-    card.ondragover = e => { e.preventDefault(); card.classList.add('drag-over'); };
-    card.ondragleave = () => card.classList.remove('drag-over');
-    card.ondrop = e => { e.preventDefault(); card.classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f?.type.startsWith('image/')) upload(idx, f); };
-    grid.appendChild(card);
+    
+    sec.appendChild(grid);
+    content.appendChild(sec);
   });
 }
 
-function openFile(idx) {
-  currentIdx = idx;
-  document.getElementById('file-input').click();
-}
+function openFile(idx) { currentIdx = idx; document.getElementById('file-input').click(); }
 document.getElementById('file-input').addEventListener('change', e => {
   if (e.target.files[0]) upload(currentIdx, e.target.files[0]);
   e.target.value = '';
@@ -224,10 +296,9 @@ document.getElementById('file-input').addEventListener('change', e => {
 
 async function upload(idx, file) {
   const photo = allPhotos[idx];
-  const card = document.getElementById('card-'+idx);
+  const card = document.getElementById('card-' + idx);
   const preview = card.querySelector('.photo-preview');
 
-  // Afficher spinner
   const uploading = document.createElement('div');
   uploading.className = 'uploading';
   uploading.innerHTML = '<div class="spinner"></div><span>Upload...</span>';
@@ -235,18 +306,12 @@ async function upload(idx, file) {
 
   try {
     const b64 = await new Promise((res, rej) => {
-      const r = new FileReader();
-      r.onload = () => res(r.result.split(',')[1]);
-      r.onerror = rej;
-      r.readAsDataURL(file);
+      const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.onerror = rej; r.readAsDataURL(file);
     });
 
-    // SHA actuel
     let sha = null;
     try {
-      const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${photo.path}`, {
-        headers: { Authorization: `token ${GITHUB_TOKEN}` }
-      });
+      const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${photo.path}`, { headers: { Authorization: `token ${TOKEN}` } });
       if (r.ok) sha = (await r.json()).sha;
     } catch(e) {}
 
@@ -255,33 +320,32 @@ async function upload(idx, file) {
 
     const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${photo.path}`, {
       method: 'PUT',
-      headers: { Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+      headers: { Authorization: `token ${TOKEN}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
     const data = await res.json();
-
     uploading.remove();
 
     if (data.commit) {
-      // Preview local immédiat
-      const objectUrl = URL.createObjectURL(file);
-      card.querySelector('img').src = objectUrl;
-      card.querySelector('img').style.display = 'block';
-      toast('success', `✅ ${photo.label} mise à jour — site en ligne dans ~30s`);
+      const url = URL.createObjectURL(file);
+      const img = card.querySelector('img');
+      img.src = url;
+      img.style.display = 'block';
+      card.querySelector('.no-photo').style.display = 'none';
+      toast('success', `✅ "${photo.label}" mis à jour — site en ligne dans ~30s`);
     } else {
-      toast('error', `❌ Erreur GitHub : ${data.message}`);
+      toast('error', `❌ ${data.message}`);
     }
   } catch(e) {
-    uploading.remove();
+    uploading?.remove();
     toast('error', `❌ ${e.message}`);
   }
 }
 
 function toast(type, msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show ' + type;
-  setTimeout(() => t.className = 'toast', 5000);
+  t.textContent = msg; t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 6000);
 }
 </script>
 </body>
