@@ -141,6 +141,13 @@ header h1 { font-size:.88rem; color:#C8960C; font-weight:700; }
 .spinner { width:14px; height:14px; border:2px solid #333; border-top-color:#C8960C; border-radius:50%; animation:spin .7s linear infinite; display:inline-block; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
+.page-nav { display:flex; gap:3px; flex-wrap:nowrap; overflow-x:auto; flex:1; scrollbar-width:none; }
+.page-nav::-webkit-scrollbar { display:none; }
+.page-btn { background:none; border:1px solid #1e1e1e; color:#444; padding:4px 10px; border-radius:5px; font-size:.72rem; cursor:pointer; white-space:nowrap; transition:all .15s; }
+.page-btn:hover { border-color:#C8960C44; color:#888; }
+.page-btn.active { border-color:#C8960C77; color:#C8960C; background:#C8960C11; }
+.iframe-bar { gap:8px; flex-wrap:nowrap; }
+
 input[type=file] { display:none; }
 </style>
 </head>
@@ -181,11 +188,20 @@ input[type=file] { display:none; }
     <div id="tab-text" class="active-tab">
       <div id="iframe-wrap">
         <div class="iframe-bar">
-          <span>atout-film.vercel.app</span>
+          <div class="page-nav" id="page-nav">
+            <button class="page-btn active" onclick="navTo('/', this)">🏠 Accueil Pro</button>
+            <button class="page-btn" onclick="navTo('/#particuliers', this)">🏡 Particuliers</button>
+            <button class="page-btn" onclick="navTo('/#film-solaire', this)">☀️ Film Solaire</button>
+            <button class="page-btn" onclick="navTo('/#vitrophanie', this)">🪟 Vitrophanie</button>
+            <button class="page-btn" onclick="navTo('/#stores', this)">🏠 Stores</button>
+            <button class="page-btn" onclick="navTo('/#covering', this)">✨ Covering</button>
+            <button class="page-btn" onclick="navTo('/#film-securite', this)">🔒 Sécurité</button>
+            <button class="page-btn" onclick="navTo('/#signaletique', this)">🏷️ Signalétique</button>
+          </div>
           <div class="device-btns">
-            <button class="dev-btn active" onclick="setDevice('desktop')">🖥 Desktop</button>
-            <button class="dev-btn" onclick="setDevice('tablet')">📱 Tablette</button>
-            <button class="dev-btn" onclick="setDevice('mobile')">📲 Mobile</button>
+            <button class="dev-btn active" onclick="setDevice('desktop', event)">🖥</button>
+            <button class="dev-btn" onclick="setDevice('tablet', event)">📱</button>
+            <button class="dev-btn" onclick="setDevice('mobile', event)">📲</button>
           </div>
         </div>
         <div id="iframe-container">
@@ -259,11 +275,28 @@ function switchTab(tab) {
 }
 
 // ── DEVICE ──
-function setDevice(d) {
+function navTo(url, btn) {
+  document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const iframe = document.getElementById('site-iframe');
+  iframe.src = url;
+  // Réinjecter le bridge après chargement
+  iframe.onload = () => {
+    // Le bridge est déjà dans index.html, juste attendre
+    setTimeout(() => {
+      document.getElementById('panel-hint').style.display = 'flex';
+      document.getElementById('panel-form').style.display = 'none';
+      document.getElementById('panel-actions').style.display = 'none';
+      document.getElementById('panel-header').querySelector('h3').textContent = 'Sélectionnez un élément dans le site';
+    }, 300);
+  };
+}
+
+function setDevice(d, evt) {
   const iframe = document.getElementById('site-iframe');
   const container = document.getElementById('iframe-container');
   document.querySelectorAll('.dev-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  if (evt) evt.target.classList.add('active');
   if (d === 'desktop') { iframe.style.width='100%'; iframe.style.height='100%'; container.style.padding='0'; }
   else if (d === 'tablet') { iframe.style.width='768px'; iframe.style.height='1024px'; container.style.padding='20px'; }
   else { iframe.style.width='390px'; iframe.style.height='844px'; container.style.padding='20px'; }
