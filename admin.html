@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atout Film — Admin Photos</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; }
+
+  #login { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  .login-card { background: #1a1a1a; border: 1px solid #333; border-radius: 16px; padding: 40px; width: 380px; }
+  .login-card h1 { font-size: 1.2rem; margin-bottom: 6px; }
+  .login-card p { color: #555; font-size: .82rem; margin-bottom: 24px; line-height: 1.5; }
+  label { display: block; font-size: .75rem; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: .05em; }
+  .login-card input { width: 100%; padding: 11px 13px; background: #111; border: 1px solid #2a2a2a; border-radius: 8px; color: #fff; font-size: .93rem; margin-bottom: 14px; outline: none; font-family: monospace; }
+  .login-card input:focus { border-color: #C8960C; }
+  .btn { width: 100%; padding: 12px; background: #C8960C; color: #0a0a0a; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; font-size: .97rem; }
+  .btn:hover { background: #E8B422; }
+  #login-error { color: #ef4444; font-size: .8rem; margin-top: 8px; display: none; }
+  .hint { font-size: .72rem; color: #444; margin-top: 8px; line-height: 1.5; }
+
+  #admin { display: none; }
+  header { background: #111; border-bottom: 1px solid #1e1e1e; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; }
+  header h1 { font-size: .97rem; color: #C8960C; font-weight: 700; }
+  .logout { background: none; border: 1px solid #2a2a2a; color: #555; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: .8rem; }
+  .logout:hover { border-color: #C8960C; color: #C8960C; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 28px; }
+  .intro { color: #555; font-size: .85rem; margin-bottom: 24px; }
+
+  .section-title { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: #444; margin: 28px 0 14px; padding-bottom: 8px; border-bottom: 1px solid #1e1e1e; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+
+  .photo-card { background: #141414; border: 1px solid #1e1e1e; border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color .2s; }
+  .photo-card:hover { border-color: #C8960C55; }
+  .photo-card.drag-over { border-color: #C8960C; background: #1a1500; }
+
+  .photo-preview { height: 150px; position: relative; background: #0d0d0d; overflow: hidden; }
+  .photo-preview img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .2s; }
+  .photo-card:hover .photo-preview img { opacity: .7; }
+  .photo-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; font-size: .8rem; color: #fff; text-align: center; gap: 6px; flex-direction: column; }
+  .photo-card:hover .photo-overlay { opacity: 1; }
+  .photo-overlay span { font-size: 1.4rem; }
+
+  .photo-info { padding: 10px 12px; }
+  .photo-label { font-size: .84rem; font-weight: 600; margin-bottom: 2px; }
+  .photo-path { font-size: .68rem; color: #3a3a3a; font-family: monospace; }
+
+  .uploading { position: absolute; inset: 0; background: rgba(0,0,0,.8); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; font-size: .8rem; color: #C8960C; }
+  .spinner { width: 20px; height: 20px; border: 2px solid #333; border-top-color: #C8960C; border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: 10px; font-size: .85rem; font-weight: 600; transform: translateY(80px); opacity: 0; transition: all .3s; z-index: 999; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { background: #14532d; border: 1px solid #22c55e; color: #86efac; }
+  .toast.error { background: #450a0a; border: 1px solid #ef4444; color: #fca5a5; }
+
+  input[type=file] { display: none; }
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="login-card">
+    <h1>🔐 Admin — Atout Film</h1>
+    <p>Gestion des photos du site. Entrez le mot de passe et votre token GitHub.</p>
+    <label>Mot de passe</label>
+    <input type="password" id="pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')document.getElementById('tok').focus()">
+    <label>Token GitHub</label>
+    <input type="password" id="tok" placeholder="ghp_..." onkeydown="if(event.key==='Enter')doLogin()">
+    <p class="hint">Le token est stocké uniquement en mémoire de session, jamais sauvegardé.</p>
+    <button class="btn" onclick="doLogin()">Accéder à l'admin</button>
+    <div id="login-error">Mot de passe incorrect</div>
+  </div>
+</div>
+
+<div id="admin">
+  <header>
+    <h1>📸 Gestion des photos — Atout Film</h1>
+    <button class="logout" onclick="logout()">Déconnexion</button>
+  </header>
+  <main>
+    <p class="intro">Glissez une photo sur une carte ou cliquez dessus pour la remplacer. Le site se met à jour automatiquement sur Vercel (~30 secondes).</p>
+    <div id="content"></div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+<input type="file" id="file-input" accept="image/*">
+
+<script>
+const PASSWORD = 'atoutfilm2025';
+const REPO = 'alexislecointe28-debug/Atout-Film';
+let GITHUB_TOKEN = '';
+
+const SECTIONS = [
+  {
+    title: '☀️ Film Solaire',
+    photos: [
+      { label: 'Card accueil', path: 'img/fs/1.jpg' },
+      { label: 'Galerie — Photo 1', path: 'img/fs/0.jpg' },
+      { label: 'Galerie — Photo 2', path: 'img/fs/2.jpg' },
+      { label: 'Galerie — Photo 3', path: 'img/fs/3.jpg' },
+      { label: 'Galerie — Photo 4', path: 'img/fs/4.jpg' },
+      { label: 'Galerie — Photo 5', path: 'img/fs/5.jpg' },
+    ]
+  },
+  {
+    title: '🪟 Vitrophanie',
+    photos: [
+      { label: 'Card accueil', path: 'img/vt/0.jpg' },
+      { label: 'Galerie — Photo 1', path: 'img/vt/1.jpg' },
+      { label: 'Galerie — Photo 2', path: 'img/vt/2.jpg' },
+      { label: 'Galerie — Photo 3', path: 'img/vt/3.jpg' },
+    ]
+  },
+  {
+    title: '✨ Covering',
+    photos: [
+      { label: 'Card accueil', path: 'img/cv/0.jpg' },
+      { label: 'Galerie — Photo 1', path: 'img/cv/1.jpg' },
+      { label: 'Galerie — Photo 2', path: 'img/cv/2.jpg' },
+      { label: 'Galerie — Photo 3', path: 'img/cv/3.jpg' },
+    ]
+  },
+  {
+    title: '🏠 Stores',
+    photos: [
+      { label: 'Card accueil', path: 'img/st/0.jpg' },
+      { label: 'Galerie — Photo 1', path: 'img/st/1.jpg' },
+      { label: 'Galerie — Photo 2', path: 'img/st/2.jpg' },
+      { label: 'Galerie — Photo 3', path: 'img/st/3.jpg' },
+      { label: 'Galerie — Photo 4', path: 'img/st/4.jpg' },
+    ]
+  },
+  {
+    title: '🏷️ Signalétique',
+    photos: [
+      { label: 'Galerie — Photo 1', path: 'img/sg/0.jpg' },
+      { label: 'Galerie — Photo 2', path: 'img/sg/1.jpg' },
+    ]
+  },
+];
+
+function doLogin() {
+  const pwd = document.getElementById('pwd').value;
+  const tok = document.getElementById('tok').value.trim();
+  if (pwd === PASSWORD && tok.startsWith('ghp_')) {
+    GITHUB_TOKEN = tok;
+    sessionStorage.setItem('admin_auth', '1');
+    sessionStorage.setItem('admin_tok', tok);
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('admin').style.display = 'block';
+    buildUI();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('login-error').textContent = pwd !== PASSWORD ? 'Mot de passe incorrect' : 'Token GitHub invalide (doit commencer par ghp_)';
+  }
+}
+
+function logout() {
+  sessionStorage.clear();
+  GITHUB_TOKEN = '';
+  location.reload();
+}
+
+// Restore session
+if (sessionStorage.getItem('admin_auth') && sessionStorage.getItem('admin_tok')) {
+  GITHUB_TOKEN = sessionStorage.getItem('admin_tok');
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('admin').style.display = 'block';
+  buildUI();
+}
+
+let allPhotos = [];
+let currentIdx = null;
+
+function buildUI() {
+  allPhotos = [];
+  const content = document.getElementById('content');
+  content.innerHTML = '';
+
+  SECTIONS.forEach(section => {
+    content.innerHTML += `<div class="section-title">${section.title}</div><div class="grid" id="grid-${section.title.replace(/[^a-z]/gi,'_')}"></div>`;
+    section.photos.forEach(photo => {
+      allPhotos.push(photo);
+    });
+  });
+
+  allPhotos.forEach((photo, idx) => {
+    const sectionKey = SECTIONS.find(s => s.photos.includes(photo)).title.replace(/[^a-z]/gi,'_');
+    const grid = document.getElementById('grid-'+sectionKey);
+    const card = document.createElement('div');
+    card.className = 'photo-card';
+    card.id = 'card-'+idx;
+    card.innerHTML = `
+      <div class="photo-preview">
+        <img src="${photo.path}?t=${Date.now()}" alt="${photo.label}" 
+             onerror="this.style.display='none'">
+        <div class="photo-overlay"><span>📂</span>Glisser ou cliquer</div>
+      </div>
+      <div class="photo-info">
+        <div class="photo-label">${photo.label}</div>
+        <div class="photo-path">${photo.path}</div>
+      </div>`;
+    card.onclick = () => openFile(idx);
+    card.ondragover = e => { e.preventDefault(); card.classList.add('drag-over'); };
+    card.ondragleave = () => card.classList.remove('drag-over');
+    card.ondrop = e => { e.preventDefault(); card.classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f?.type.startsWith('image/')) upload(idx, f); };
+    grid.appendChild(card);
+  });
+}
+
+function openFile(idx) {
+  currentIdx = idx;
+  document.getElementById('file-input').click();
+}
+document.getElementById('file-input').addEventListener('change', e => {
+  if (e.target.files[0]) upload(currentIdx, e.target.files[0]);
+  e.target.value = '';
+});
+
+async function upload(idx, file) {
+  const photo = allPhotos[idx];
+  const card = document.getElementById('card-'+idx);
+  const preview = card.querySelector('.photo-preview');
+
+  // Afficher spinner
+  const uploading = document.createElement('div');
+  uploading.className = 'uploading';
+  uploading.innerHTML = '<div class="spinner"></div><span>Upload...</span>';
+  preview.appendChild(uploading);
+
+  try {
+    const b64 = await new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result.split(',')[1]);
+      r.onerror = rej;
+      r.readAsDataURL(file);
+    });
+
+    // SHA actuel
+    let sha = null;
+    try {
+      const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${photo.path}`, {
+        headers: { Authorization: `token ${GITHUB_TOKEN}` }
+      });
+      if (r.ok) sha = (await r.json()).sha;
+    } catch(e) {}
+
+    const body = { message: `photo: update ${photo.path}`, content: b64 };
+    if (sha) body.sha = sha;
+
+    const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${photo.path}`, {
+      method: 'PUT',
+      headers: { Authorization: `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+
+    uploading.remove();
+
+    if (data.commit) {
+      // Preview local immédiat
+      const objectUrl = URL.createObjectURL(file);
+      card.querySelector('img').src = objectUrl;
+      card.querySelector('img').style.display = 'block';
+      toast('success', `✅ ${photo.label} mise à jour — site en ligne dans ~30s`);
+    } else {
+      toast('error', `❌ Erreur GitHub : ${data.message}`);
+    }
+  } catch(e) {
+    uploading.remove();
+    toast('error', `❌ ${e.message}`);
+  }
+}
+
+function toast(type, msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 5000);
+}
+</script>
+</body>
+</html>
