@@ -3,118 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Atout Film — Admin Photos</title>
+<title>Atout Film — Admin</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: system-ui, sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:system-ui,sans-serif; background:#0a0a0a; color:#fff; height:100vh; overflow:hidden; }
 
-  /* LOGIN */
-  #login { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-  .login-card { background: #1a1a1a; border: 1px solid #333; border-radius: 16px; padding: 40px; width: 380px; }
-  .login-card h1 { font-size: 1.2rem; margin-bottom: 6px; }
-  .login-card p { color: #555; font-size: .82rem; margin-bottom: 24px; line-height: 1.5; }
-  label { display: block; font-size: .75rem; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: .05em; }
-  .login-card input { width: 100%; padding: 11px 13px; background: #111; border: 1px solid #2a2a2a; border-radius: 8px; color: #fff; font-size: .93rem; margin-bottom: 14px; outline: none; font-family: monospace; }
-  .login-card input:focus { border-color: #C8960C; }
-  .btn-login { width: 100%; padding: 12px; background: #C8960C; color: #0a0a0a; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; font-size: .97rem; }
-  .btn-login:hover { background: #E8B422; }
-  #login-error { color: #ef4444; font-size: .8rem; margin-top: 8px; display: none; }
-  .hint { font-size: .72rem; color: #444; margin-top: 8px; line-height: 1.5; }
+/* LOGIN */
+#login { display:flex; align-items:center; justify-content:center; height:100vh; }
+.login-card { background:#1a1a1a; border:1px solid #333; border-radius:16px; padding:40px; width:360px; }
+.login-card h1 { font-size:1.1rem; margin-bottom:6px; }
+.login-card p { color:#555; font-size:.82rem; margin-bottom:24px; }
+.lbl { display:block; font-size:.72rem; color:#555; text-transform:uppercase; letter-spacing:.06em; margin-bottom:5px; }
+.login-card input { width:100%; padding:11px 13px; background:#111; border:1px solid #2a2a2a; border-radius:8px; color:#fff; font-size:.93rem; margin-bottom:14px; outline:none; }
+.login-card input:focus { border-color:#C8960C; }
+.btn-primary { width:100%; padding:11px; background:#C8960C; color:#0a0a0a; font-weight:700; border:none; border-radius:8px; cursor:pointer; font-size:.95rem; }
+.btn-primary:hover { background:#E8B422; }
+#login-err { color:#ef4444; font-size:.78rem; margin-top:8px; display:none; }
 
-  /* ADMIN */
-  #admin { display: none; }
-  header { background: #111; border-bottom: 1px solid #1e1e1e; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-  header h1 { font-size: .97rem; color: #C8960C; font-weight: 700; }
-  .header-right { display: flex; gap: 10px; align-items: center; }
-  #pending-badge { display:none; background:#C8960C22; border:1px solid #C8960C55; color:#C8960C; padding:5px 12px; border-radius:6px; font-size:.78rem; font-weight:600; }
-  #publish-btn { display:none; background:#C8960C; color:#0a0a0a; border:none; padding:9px 20px; border-radius:7px; font-weight:700; font-size:.85rem; cursor:pointer; transition:background .2s; }
-  #publish-btn:hover { background:#E8B422; }
-  #publish-btn:disabled { opacity:.5; cursor:default; }
-  .logout { background:none; border:1px solid #2a2a2a; color:#555; padding:6px 14px; border-radius:6px; cursor:pointer; font-size:.8rem; }
-  .logout:hover { border-color:#C8960C; color:#C8960C; }
+/* LAYOUT ADMIN */
+#admin { display:none; height:100vh; flex-direction:column; }
+header {
+  background:#111; border-bottom:1px solid #1e1e1e;
+  padding:0 16px; height:48px; display:flex; align-items:center;
+  justify-content:space-between; flex-shrink:0; z-index:100;
+}
+header h1 { font-size:.88rem; color:#C8960C; font-weight:700; }
+.hdr-right { display:flex; gap:8px; align-items:center; }
+#pending-badge { display:none; background:#C8960C22; border:1px solid #C8960C55; color:#C8960C; padding:4px 10px; border-radius:5px; font-size:.72rem; font-weight:700; }
+#publish-btn { display:none; background:#C8960C; color:#0a0a0a; border:none; padding:7px 16px; border-radius:6px; font-weight:700; font-size:.8rem; cursor:pointer; }
+#publish-btn:hover { background:#E8B422; }
+#publish-btn:disabled { opacity:.5; cursor:default; }
+.tab-bar { display:flex; gap:2px; }
+.tab { padding:6px 14px; border-radius:5px; font-size:.78rem; cursor:pointer; color:#555; border:none; background:none; }
+.tab.active { background:#1e1e1e; color:#fff; }
+.logout { background:none; border:1px solid #2a2a2a; color:#555; padding:5px 12px; border-radius:5px; cursor:pointer; font-size:.75rem; }
+.logout:hover { border-color:#C8960C; color:#C8960C; }
 
-  main { max-width: 1200px; margin: 0 auto; padding: 28px; }
-  .tip { background: #1a1500; border: 1px solid #C8960C33; border-radius: 8px; padding: 10px 14px; font-size: .78rem; color: #C8960C99; margin-bottom: 28px; line-height: 1.6; }
-  .tip strong { color: #C8960C; }
+/* WORKSPACE */
+#workspace { display:flex; flex:1; overflow:hidden; }
 
-  .section-title { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: #C8960C; margin: 32px 0 14px; padding-bottom: 8px; border-bottom: 1px solid #1e1e1e; }
+/* IFRAME */
+#iframe-wrap {
+  flex:1; position:relative; background:#1a1a1a;
+  display:flex; flex-direction:column;
+  border-right:1px solid #1e1e1e;
+}
+.iframe-bar {
+  background:#141414; border-bottom:1px solid #1e1e1e;
+  padding:6px 12px; display:flex; align-items:center; gap:8px; flex-shrink:0;
+}
+.iframe-bar span { font-size:.7rem; color:#444; font-family:monospace; }
+.device-btns { display:flex; gap:4px; margin-left:auto; }
+.dev-btn { background:none; border:1px solid #2a2a2a; color:#555; padding:3px 8px; border-radius:4px; font-size:.68rem; cursor:pointer; }
+.dev-btn.active { border-color:#C8960C55; color:#C8960C; }
+#iframe-container { flex:1; display:flex; justify-content:center; overflow:auto; background:#2a2a2a; padding:0; }
+#site-iframe { border:none; background:#fff; transition:width .2s; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
-  .grid.wide { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+/* PANEL */
+#panel {
+  width:320px; flex-shrink:0; display:flex; flex-direction:column;
+  background:#0f0f0f; overflow:hidden;
+}
+#panel-header {
+  padding:14px 16px 10px; border-bottom:1px solid #1a1a1a; flex-shrink:0;
+}
+#panel-header h3 { font-size:.82rem; color:#888; font-weight:400; }
+#panel-hint {
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:10px; color:#2a2a2a; text-align:center; padding:20px;
+}
+#panel-hint .hint-icon { font-size:2.5rem; opacity:.4; }
+#panel-hint p { font-size:.78rem; line-height:1.6; }
+#panel-form { flex:1; display:none; flex-direction:column; overflow:hidden; }
+#panel-form-inner { flex:1; overflow-y:auto; padding:14px 16px; display:flex; flex-direction:column; gap:12px; }
+.field-group { display:flex; flex-direction:column; gap:4px; }
+.field-lbl { font-size:.68rem; color:#555; text-transform:uppercase; letter-spacing:.06em; display:flex; align-items:center; justify-content:space-between; }
+.field-lbl .tag { background:#1e1e1e; color:#666; font-size:.6rem; padding:1px 6px; border-radius:3px; }
+.field-input, .field-textarea { width:100%; background:#1a1a1a; border:1px solid #222; border-radius:6px; color:#fff; font-size:.85rem; padding:8px 10px; outline:none; font-family:system-ui; }
+.field-input:focus, .field-textarea:focus { border-color:#C8960C55; }
+.field-textarea { resize:vertical; min-height:80px; line-height:1.5; }
+.field-textarea.tall { min-height:120px; }
+.alt-field { display:flex; flex-direction:column; gap:4px; }
+.alt-lbl { font-size:.66rem; color:#3a3a3a; display:flex; align-items:center; gap:6px; }
+.alt-lbl .seo { background:#1e3a1e; color:#4ade80; font-size:.58rem; padding:1px 5px; border-radius:3px; font-weight:700; }
+.alt-input { width:100%; background:#111; border:1px solid #1e1e1e; border-radius:5px; color:#888; font-size:.72rem; padding:6px 8px; outline:none; resize:none; height:52px; font-family:system-ui; line-height:1.4; }
+.alt-input:focus { border-color:#C8960C44; color:#ccc; }
 
-  /* CARD */
-  .photo-card { background: #141414; border: 1px solid #1e1e1e; border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color .2s; display: flex; flex-direction: column; }
-  .photo-card:hover { border-color: #C8960C44; }
-  .photo-card.drag-over { border-color: #C8960C; background: #1a1500; }
-  .photo-card.pending { border-color: #C8960C77; }
+/* Photo drop zone */
+.drop-zone {
+  border:2px dashed #2a2a2a; border-radius:8px;
+  padding:20px; text-align:center; cursor:pointer;
+  transition:all .2s; position:relative; overflow:hidden;
+}
+.drop-zone:hover, .drop-zone.drag-over { border-color:#C8960C; background:rgba(200,150,12,.04); }
+.drop-zone img { width:100%; max-height:140px; object-fit:cover; border-radius:4px; display:none; margin-bottom:8px; }
+.drop-zone-txt { font-size:.75rem; color:#444; display:flex; flex-direction:column; align-items:center; gap:5px; }
+.drop-zone-txt span { font-size:1.5rem; }
+.dz-hint { font-size:.65rem; color:#333; }
+.dz-changed { font-size:.65rem; color:#C8960C; font-weight:600; margin-top:4px; display:none; }
 
-  .photo-preview { position: relative; background: #0d0d0d; overflow: hidden; flex-shrink: 0; }
-  .photo-preview.tall { height: 130px; }
-  .photo-preview.short { height: 100px; }
-  .photo-preview img { width: 100%; height: 100%; object-fit: cover; display: none; transition: opacity .2s; }
-  .photo-card:hover .photo-preview img { opacity: .8; }
-  .photo-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; font-size: .75rem; color: #fff; text-align: center; flex-direction: column; gap: 4px; background: rgba(0,0,0,.4); }
-  .photo-card:hover .photo-overlay { opacity: 1; }
-  .no-photo { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
-  .no-photo-icon { font-size: 1.4rem; opacity: .25; }
-  .no-photo-txt { font-size: .65rem; color: #2a2a2a; }
-  .pending-dot { position: absolute; top: 7px; right: 7px; background: #C8960C; color: #0a0a0a; font-size: .58rem; font-weight: 800; padding: 2px 7px; border-radius: 100px; }
+#panel-actions { padding:12px 16px; border-top:1px solid #1a1a1a; display:none; flex-shrink:0; }
+.btn-apply { width:100%; padding:9px; background:#1e1e1e; border:1px solid #333; color:#ccc; border-radius:7px; cursor:pointer; font-size:.82rem; font-weight:600; transition:all .2s; }
+.btn-apply:hover { border-color:#C8960C55; color:#C8960C; }
 
-  .photo-info { padding: 10px 10px 6px; flex: 1; display: flex; flex-direction: column; gap: 5px; }
-  .photo-label { font-size: .8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* ONGLET PHOTOS */
+#tab-photos { display:none; flex:1; flex-direction:column; overflow:hidden; }
+#tab-photos.active-tab { display:flex; }
+#tab-text { display:flex; flex:1; overflow:hidden; }
+#tab-text.active-tab { display:flex; }
 
-  /* CHAMP ALT */
-  .alt-field { display: flex; flex-direction: column; gap: 3px; }
-  .alt-label { font-size: .62rem; color: #555; text-transform: uppercase; letter-spacing: .06em; display: flex; align-items: center; gap: 4px; }
-  .alt-label span { background: #1e3a1e; color: #4ade80; font-size: .58rem; padding: 1px 5px; border-radius: 3px; font-weight: 700; }
-  .alt-input { width: 100%; background: #0d0d0d; border: 1px solid #1e1e1e; border-radius: 5px; color: #ccc; font-size: .73rem; padding: 5px 7px; outline: none; resize: none; height: 46px; font-family: system-ui; line-height: 1.4; }
-  .alt-input:focus { border-color: #C8960C55; color: #fff; }
-  .alt-input.changed { border-color: #C8960C55; background: #1a1500; }
+.photos-panel { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:24px; }
+.photo-section-title { font-size:.7rem; text-transform:uppercase; letter-spacing:.1em; color:#C8960C; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid #1e1e1e; }
+.photo-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.photo-grid.wide { grid-template-columns:repeat(2,1fr); }
+.pcard { background:#141414; border:1px solid #1e1e1e; border-radius:8px; overflow:hidden; cursor:pointer; transition:border-color .2s; }
+.pcard:hover { border-color:#C8960C44; }
+.pcard.pending { border-color:#C8960C77; }
+.pcard.drag-over { border-color:#C8960C; background:#1a1500; }
+.pcard-img { height:80px; background:#0d0d0d; position:relative; overflow:hidden; }
+.pcard-img img { width:100%; height:100%; object-fit:cover; display:none; }
+.pcard-img .no-img { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1.2rem; opacity:.2; }
+.pcard-img .pdot { position:absolute; top:5px; right:5px; background:#C8960C; color:#000; font-size:.55rem; font-weight:800; padding:1px 5px; border-radius:100px; }
+.pcard-info { padding:7px 8px; }
+.pcard-label { font-size:.74rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pcard-path { font-size:.6rem; color:#333; font-family:monospace; }
+.pcard-alt { width:100%; background:#0d0d0d; border:none; border-top:1px solid #1a1a1a; color:#555; font-size:.68rem; padding:5px 8px; outline:none; font-family:system-ui; }
+.pcard-alt:focus { color:#ccc; background:#111; }
 
-  /* SPINNER */
-  .uploading { position: absolute; inset: 0; background: rgba(0,0,0,.85); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; font-size: .75rem; color: #C8960C; z-index: 10; }
-  .spinner { width: 18px; height: 18px; border: 2px solid #333; border-top-color: #C8960C; border-radius: 50%; animation: spin .7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* TOAST */
+.toast { position:fixed; bottom:20px; right:20px; padding:10px 16px; border-radius:8px; font-size:.8rem; font-weight:600; transform:translateY(60px); opacity:0; transition:all .25s; z-index:999; max-width:380px; }
+.toast.show { transform:translateY(0); opacity:1; }
+.toast.success { background:#14532d; border:1px solid #22c55e; color:#86efac; }
+.toast.error   { background:#450a0a; border:1px solid #ef4444; color:#fca5a5; }
+.toast.info    { background:#1a1500; border:1px solid #C8960C55; color:#C8960C; }
 
-  /* TOAST */
-  .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 18px; border-radius: 10px; font-size: .82rem; font-weight: 600; transform: translateY(80px); opacity: 0; transition: all .3s; z-index: 999; max-width: 420px; line-height: 1.4; }
-  .toast.show { transform: translateY(0); opacity: 1; }
-  .toast.success { background: #14532d; border: 1px solid #22c55e; color: #86efac; }
-  .toast.error   { background: #450a0a; border: 1px solid #ef4444; color: #fca5a5; }
-  .toast.info    { background: #1a1500; border: 1px solid #C8960C55; color: #C8960C; }
+/* SPINNER */
+.spinner { width:14px; height:14px; border:2px solid #333; border-top-color:#C8960C; border-radius:50%; animation:spin .7s linear infinite; display:inline-block; }
+@keyframes spin { to { transform:rotate(360deg); } }
 
-  input[type=file] { display: none; }
+input[type=file] { display:none; }
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="login">
   <div class="login-card">
     <h1>🔐 Admin — Atout Film</h1>
-    <p>Gestion des photos et visuels du site.</p>
-    <label>Mot de passe</label>
+    <p>Éditeur de contenu et gestion des photos</p>
+    <label class="lbl">Mot de passe</label>
     <input type="password" id="pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="btn-login" onclick="doLogin()">Accéder à l'admin</button>
-    <div id="login-error"></div>
+    <button class="btn-primary" onclick="doLogin()">Accéder à l'admin</button>
+    <div id="login-err">Mot de passe incorrect</div>
   </div>
 </div>
 
+<!-- ADMIN -->
 <div id="admin">
   <header>
-    <h1>📸 Gestion des photos — Atout Film</h1>
-    <div class="header-right">
+    <div style="display:flex;align-items:center;gap:16px">
+      <h1>✏️ Atout Film — Admin</h1>
+      <div class="tab-bar">
+        <button class="tab active" id="tab-btn-text" onclick="switchTab('text')">Textes & Contenu</button>
+        <button class="tab" id="tab-btn-photos" onclick="switchTab('photos')">Photos</button>
+      </div>
+    </div>
+    <div class="hdr-right">
       <div id="pending-badge"></div>
-      <button id="publish-btn" onclick="publishAll()">🚀 Publier les modifications</button>
+      <button id="publish-btn" onclick="publishAll()">🚀 Publier</button>
       <button class="logout" onclick="logout()">Déconnexion</button>
     </div>
   </header>
-  <main>
-    <p class="tip">
-      Glissez ou cliquez pour remplacer une photo. Renseignez la <strong>description SEO</strong> pour chaque image (Google l'utilise pour indexer vos photos).
-      Quand vous êtes prêt, cliquez <strong>"Publier"</strong> — toutes les modifications partent en un seul déploiement.
-    </p>
-    <div id="content"></div>
-  </main>
+
+  <div id="workspace">
+
+    <!-- ONGLET TEXTES : iframe + panel -->
+    <div id="tab-text" class="active-tab">
+      <div id="iframe-wrap">
+        <div class="iframe-bar">
+          <span>atout-film.vercel.app</span>
+          <div class="device-btns">
+            <button class="dev-btn active" onclick="setDevice('desktop')">🖥 Desktop</button>
+            <button class="dev-btn" onclick="setDevice('tablet')">📱 Tablette</button>
+            <button class="dev-btn" onclick="setDevice('mobile')">📲 Mobile</button>
+          </div>
+        </div>
+        <div id="iframe-container">
+          <iframe id="site-iframe" src="/" style="width:100%;height:100%"></iframe>
+        </div>
+      </div>
+      <div id="panel">
+        <div id="panel-header"><h3>Sélectionnez un élément dans le site</h3></div>
+        <div id="panel-hint">
+          <div class="hint-icon">👆</div>
+          <p>Cliquez sur n'importe quel titre ou texte dans le site pour l'éditer.<br><br>Les éléments éditables se surlignent en orange au survol.</p>
+        </div>
+        <div id="panel-form">
+          <div id="panel-form-inner"></div>
+          <div id="panel-actions">
+            <button class="btn-apply" onclick="applyText()">✓ Appliquer les modifications</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ONGLET PHOTOS -->
+    <div id="tab-photos">
+      <div class="photos-panel" id="photos-grid"></div>
+    </div>
+
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -122,204 +220,281 @@
 
 <script>
 const PASSWORD = 'atoutfilm2025';
+const REPO = 'alexislecointe28-debug/Atout-Film';
+let currentSelection = null; // { uid, tag, text, originalText }
+const textPending = {};  // uid -> newText
+const photoPending = {}; // path -> { b64, label, newAlt }
+let currentPhotoIdx = null;
 
-const SECTIONS = [
-  { title: '📸 Chantiers — Film Solaire', size: 'wide', photos: [
-    { label: 'Card accueil', path: 'img/fs/1.jpg', alt: 'Réalisation film solaire professionnel — Atout Film' },
-    { label: 'Galerie 1', path: 'img/fs/0.jpg', alt: 'Nos réalisations film solaire' },
-    { label: 'Galerie 2', path: 'img/fs/2.jpg', alt: 'Nos réalisations film solaire' },
-    { label: 'Galerie 3', path: 'img/fs/3.jpg', alt: 'Nos réalisations film solaire' },
-    { label: 'Galerie 4', path: 'img/fs/4.jpg', alt: 'Nos réalisations film solaire' },
-    { label: 'Galerie 5', path: 'img/fs/5.jpg', alt: 'Nos réalisations film solaire' },
-  ]},
-  { title: '📸 Chantiers — Vitrophanie', size: 'wide', photos: [
-    { label: 'Card accueil', path: 'img/vt/0.jpg', alt: 'Réalisation vitrophanie professionnelle — Atout Film' },
-    { label: 'Galerie 1', path: 'img/vt/1.jpg', alt: 'Nos réalisations vitrophanie' },
-    { label: 'Galerie 2', path: 'img/vt/2.jpg', alt: 'Nos réalisations vitrophanie' },
-    { label: 'Galerie 3', path: 'img/vt/3.jpg', alt: 'Nos réalisations vitrophanie' },
-  ]},
-  { title: '📸 Chantiers — Covering', size: 'wide', photos: [
-    { label: 'Card accueil', path: 'img/cv/0.jpg', alt: 'Réalisation covering mobilier — Atout Film' },
-    { label: 'Galerie 1', path: 'img/cv/1.jpg', alt: 'Nos réalisations covering' },
-    { label: 'Galerie 2', path: 'img/cv/2.jpg', alt: 'Nos réalisations covering' },
-    { label: 'Galerie 3', path: 'img/cv/3.jpg', alt: 'Nos réalisations covering' },
-  ]},
-  { title: '📸 Chantiers — Stores', size: 'wide', photos: [
-    { label: 'Card accueil', path: 'img/st/0.jpg', alt: 'Réalisation stores intérieurs — Atout Film' },
-    { label: 'Galerie 1', path: 'img/st/1.jpg', alt: 'Nos réalisations stores' },
-    { label: 'Galerie 2', path: 'img/st/2.jpg', alt: 'Nos réalisations stores' },
-    { label: 'Galerie 3', path: 'img/st/3.jpg', alt: 'Nos réalisations stores' },
-    { label: 'Galerie 4', path: 'img/st/4.jpg', alt: 'Nos réalisations stores' },
-  ]},
-  { title: '📸 Chantiers — Signalétique', size: 'wide', photos: [
-    { label: 'Galerie 1', path: 'img/sg/0.jpg', alt: 'Réalisation signalétique adhésive — Atout Film' },
-    { label: 'Galerie 2', path: 'img/sg/1.jpg', alt: 'Nos réalisations signalétique' },
-  ]},
-  { title: '🎨 Gamme — Film Solaire', size: 'normal', photos: [
-    { label: 'Neutre haute perf.', path: 'img/gamme/fs/0.jpg', alt: 'Film solaire neutre haute performance — Atout Film' },
-    { label: 'Teinté bronze', path: 'img/gamme/fs/1.jpg', alt: 'Film solaire teinté bronze — Atout Film' },
-    { label: 'Miroir extérieur', path: 'img/gamme/fs/2.jpg', alt: 'Film solaire miroir extérieur — Atout Film' },
-    { label: '3M Prestige', path: 'img/gamme/fs/3.jpg', alt: 'Film solaire 3M Prestige — Atout Film' },
-    { label: 'Film sécurité solaire', path: 'img/gamme/fs/4.jpg', alt: 'Film sécurité solaire combiné — Atout Film' },
-  ]},
-  { title: '🎨 Gamme — Stores', size: 'normal', photos: [
-    { label: 'Stores vénitiens', path: 'img/gamme/st/0.jpg', alt: 'Stores vénitiens sur mesure — Atout Film' },
-    { label: 'Stores enrouleurs', path: 'img/gamme/st/1.jpg', alt: 'Stores enrouleurs sur mesure — Atout Film' },
-    { label: 'Bandes verticales', path: 'img/gamme/st/2.jpg', alt: 'Bandes verticales occultantes — Atout Film' },
-    { label: 'Stores plissés', path: 'img/gamme/st/3.jpg', alt: 'Stores plissés verrière — Atout Film' },
-  ]},
-  { title: '🎨 Gamme — Vitrophanie', size: 'normal', photos: [
-    { label: 'Film dépoli', path: 'img/gamme/vt/0.jpg', alt: 'Film dépoli professionnel sur vitrage — Atout Film' },
-    { label: 'Impression numérique', path: 'img/gamme/vt/1.jpg', alt: 'Impression numérique sur vitrage — Atout Film' },
-    { label: 'Découpe logo', path: 'img/gamme/vt/2.jpg', alt: 'Découpe logo et lettrage sur vitrage — Atout Film' },
-    { label: 'Bandes sécurité', path: 'img/gamme/vt/3.jpg', alt: 'Bandes de sécurité PMR sur vitrage — Atout Film' },
-  ]},
-  { title: '🎨 Finitions Covering', size: 'normal', photos: [
-    { label: 'Bois & chêne', path: 'img/finitions/0.jpg', alt: 'Covering effet bois chêne — Atout Film' },
-    { label: 'Béton & pierre', path: 'img/finitions/1.jpg', alt: 'Covering effet béton ciré — Atout Film' },
-    { label: 'Métal brossé', path: 'img/finitions/2.jpg', alt: 'Covering effet métal brossé — Atout Film' },
-    { label: 'Marbre & granit', path: 'img/finitions/3.jpg', alt: 'Covering effet marbre granit — Atout Film' },
-    { label: 'Uni mat & satin', path: 'img/finitions/4.jpg', alt: 'Covering uni mat satin — Atout Film' },
-    { label: 'Ardoise & cuir', path: 'img/finitions/5.jpg', alt: 'Covering effet ardoise cuir — Atout Film' },
-  ]},
-  { title: '🏡 Offres Particuliers', size: 'wide', photos: [
-    { label: 'Covering Cuisine', path: 'img/offres/0.jpg', alt: 'Covering cuisine sans démontage — Atout Film' },
-    { label: 'Film Solaire Véranda', path: 'img/offres/1.jpg', alt: 'Film solaire véranda baies vitrées — Atout Film' },
-  ]},
-];
-
-// LOGIN
+// ── LOGIN ──
 function doLogin() {
   const pwd = document.getElementById('pwd').value;
-  const err = document.getElementById('login-error');
-  if (pwd !== PASSWORD) { err.textContent = 'Mot de passe incorrect'; err.style.display='block'; return; }
-  sessionStorage.setItem('af_auth', '1');
+  if (pwd !== PASSWORD) { document.getElementById('login-err').style.display='block'; return; }
+  sessionStorage.setItem('af_auth','1');
   sessionStorage.setItem('af_pwd', pwd);
   document.getElementById('login').style.display = 'none';
-  document.getElementById('admin').style.display = 'block';
-  buildUI();
+  document.getElementById('admin').style.display = 'flex';
+  initAdmin();
 }
 function logout() { sessionStorage.clear(); location.reload(); }
 if (sessionStorage.getItem('af_auth')) {
   document.getElementById('login').style.display = 'none';
-  document.getElementById('admin').style.display = 'block';
-  buildUI();
+  document.getElementById('admin').style.display = 'flex';
+  initAdmin();
 }
 
+// ── INIT ──
+function initAdmin() {
+  // Écouter les messages de l'iframe
+  window.addEventListener('message', onIframeMsg);
+  buildPhotosGrid();
+}
+
+// ── TABS ──
+function switchTab(tab) {
+  document.getElementById('tab-text').classList.toggle('active-tab', tab==='text');
+  document.getElementById('tab-photos').classList.toggle('active-tab', tab==='photos');
+  document.getElementById('tab-btn-text').classList.toggle('active', tab==='text');
+  document.getElementById('tab-btn-photos').classList.toggle('active', tab==='photos');
+}
+
+// ── DEVICE ──
+function setDevice(d) {
+  const iframe = document.getElementById('site-iframe');
+  const container = document.getElementById('iframe-container');
+  document.querySelectorAll('.dev-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  if (d === 'desktop') { iframe.style.width='100%'; iframe.style.height='100%'; container.style.padding='0'; }
+  else if (d === 'tablet') { iframe.style.width='768px'; iframe.style.height='1024px'; container.style.padding='20px'; }
+  else { iframe.style.width='390px'; iframe.style.height='844px'; container.style.padding='20px'; }
+}
+
+// ── IFRAME MESSAGES ──
+function onIframeMsg(e) {
+  if (e.data.type === 'af-select') selectElement(e.data);
+  if (e.data.type === 'af-ready') console.log('iframe bridge ready');
+}
+
+function selectElement(data) {
+  currentSelection = { uid: data.uid, tag: data.tag, text: data.text, originalText: data.text };
+  
+  const hint = document.getElementById('panel-hint');
+  const form = document.getElementById('panel-form');
+  const inner = document.getElementById('panel-form-inner');
+  const actions = document.getElementById('panel-actions');
+  const header = document.getElementById('panel-header');
+  
+  hint.style.display = 'none';
+  form.style.display = 'flex';
+  actions.style.display = 'block';
+  
+  header.querySelector('h3').textContent = `Édition — <${data.tag}>`;
+  
+  // Utiliser la valeur en attente si elle existe
+  const currentText = textPending[data.uid] !== undefined ? textPending[data.uid] : data.text;
+  
+  inner.innerHTML = `
+    <div class="field-group">
+      <div class="field-lbl">
+        Contenu <span class="tag">&lt;${data.tag}&gt;</span>
+      </div>
+      ${data.tag === 'p' || data.tag === 'div' 
+        ? `<textarea class="field-textarea tall" id="edit-text">${currentText}</textarea>`
+        : `<input class="field-input" type="text" id="edit-text" value="${currentText.replace(/"/g,'&quot;')}">`
+      }
+    </div>
+    <div style="font-size:.65rem;color:#333;line-height:1.6">
+      Les modifications s'affichent immédiatement dans le site ci-contre.<br>
+      Cliquez "Publier" pour mettre en ligne.
+    </div>
+  `;
+  
+  // Live preview : mettre à jour l'iframe en temps réel
+  const editField = document.getElementById('edit-text');
+  editField.addEventListener('input', function() {
+    const newText = this.value;
+    document.getElementById('site-iframe').contentWindow.postMessage({
+      type: 'af-update', uid: data.uid, text: newText
+    }, '*');
+  });
+  
+  editField.focus();
+  editField.select();
+}
+
+function applyText() {
+  if (!currentSelection) return;
+  const newText = document.getElementById('edit-text').value.trim();
+  if (!newText) return;
+  
+  if (newText !== currentSelection.originalText) {
+    textPending[currentSelection.uid] = newText;
+    currentSelection.originalText = newText;
+    updatePendingUI();
+    toast('info', `📋 Modification enregistrée — cliquez "Publier" pour mettre en ligne`);
+  }
+}
+
+// ── PHOTOS GRID ──
+const PHOTO_SECTIONS = [
+  { title:'☀️ Film Solaire — Chantiers', photos:[
+    {label:'Card accueil', path:'img/fs/1.jpg', alt:'Réalisation film solaire professionnel — Atout Film'},
+    {label:'Galerie 1', path:'img/fs/0.jpg', alt:'Réalisation film solaire'},
+    {label:'Galerie 2', path:'img/fs/2.jpg', alt:'Réalisation film solaire'},
+    {label:'Galerie 3', path:'img/fs/3.jpg', alt:'Réalisation film solaire'},
+    {label:'Galerie 4', path:'img/fs/4.jpg', alt:'Réalisation film solaire'},
+    {label:'Galerie 5', path:'img/fs/5.jpg', alt:'Réalisation film solaire'},
+  ]},
+  { title:'🪟 Vitrophanie — Chantiers', photos:[
+    {label:'Card accueil', path:'img/vt/0.jpg', alt:'Réalisation vitrophanie — Atout Film'},
+    {label:'Galerie 1', path:'img/vt/1.jpg', alt:'Réalisation vitrophanie'},
+    {label:'Galerie 2', path:'img/vt/2.jpg', alt:'Réalisation vitrophanie'},
+    {label:'Galerie 3', path:'img/vt/3.jpg', alt:'Réalisation vitrophanie'},
+  ]},
+  { title:'✨ Covering — Chantiers', photos:[
+    {label:'Card accueil', path:'img/cv/0.jpg', alt:'Réalisation covering — Atout Film'},
+    {label:'Galerie 1', path:'img/cv/1.jpg', alt:'Réalisation covering'},
+    {label:'Galerie 2', path:'img/cv/2.jpg', alt:'Réalisation covering'},
+    {label:'Galerie 3', path:'img/cv/3.jpg', alt:'Réalisation covering'},
+  ]},
+  { title:'🏠 Stores — Chantiers', photos:[
+    {label:'Card accueil', path:'img/st/0.jpg', alt:'Réalisation stores — Atout Film'},
+    {label:'Galerie 1', path:'img/st/1.jpg', alt:'Réalisation stores'},
+    {label:'Galerie 2', path:'img/st/2.jpg', alt:'Réalisation stores'},
+    {label:'Galerie 3', path:'img/st/3.jpg', alt:'Réalisation stores'},
+    {label:'Galerie 4', path:'img/st/4.jpg', alt:'Réalisation stores'},
+  ]},
+  { title:'🏷️ Signalétique', photos:[
+    {label:'Galerie 1', path:'img/sg/0.jpg', alt:'Réalisation signalétique — Atout Film'},
+    {label:'Galerie 2', path:'img/sg/1.jpg', alt:'Réalisation signalétique'},
+  ]},
+  { title:'🎨 Gamme Film Solaire', photos:[
+    {label:'Neutre haute perf.', path:'img/gamme/fs/0.jpg', alt:'Film solaire neutre — Atout Film'},
+    {label:'Teinté bronze', path:'img/gamme/fs/1.jpg', alt:'Film solaire teinté bronze'},
+    {label:'Miroir extérieur', path:'img/gamme/fs/2.jpg', alt:'Film solaire miroir'},
+    {label:'3M Prestige', path:'img/gamme/fs/3.jpg', alt:'Film solaire 3M Prestige'},
+    {label:'Sécurité solaire', path:'img/gamme/fs/4.jpg', alt:'Film sécurité solaire'},
+  ]},
+  { title:'🎨 Gamme Stores', photos:[
+    {label:'Stores vénitiens', path:'img/gamme/st/0.jpg', alt:'Stores vénitiens — Atout Film'},
+    {label:'Stores enrouleurs', path:'img/gamme/st/1.jpg', alt:'Stores enrouleurs'},
+    {label:'Bandes verticales', path:'img/gamme/st/2.jpg', alt:'Bandes verticales'},
+    {label:'Stores plissés', path:'img/gamme/st/3.jpg', alt:'Stores plissés'},
+  ]},
+  { title:'🎨 Gamme Vitrophanie', photos:[
+    {label:'Film dépoli', path:'img/gamme/vt/0.jpg', alt:'Film dépoli — Atout Film'},
+    {label:'Impression numérique', path:'img/gamme/vt/1.jpg', alt:'Impression numérique vitrage'},
+    {label:'Découpe logo', path:'img/gamme/vt/2.jpg', alt:'Découpe logo vitrage'},
+    {label:'Bandes sécurité', path:'img/gamme/vt/3.jpg', alt:'Bandes sécurité PMR'},
+  ]},
+  { title:'🎨 Finitions Covering', photos:[
+    {label:'Bois & chêne', path:'img/finitions/0.jpg', alt:'Covering bois chêne'},
+    {label:'Béton & pierre', path:'img/finitions/1.jpg', alt:'Covering béton ciré'},
+    {label:'Métal brossé', path:'img/finitions/2.jpg', alt:'Covering métal brossé'},
+    {label:'Marbre & granit', path:'img/finitions/3.jpg', alt:'Covering marbre granit'},
+    {label:'Uni mat & satin', path:'img/finitions/4.jpg', alt:'Covering uni mat satin'},
+    {label:'Ardoise & cuir', path:'img/finitions/5.jpg', alt:'Covering ardoise cuir'},
+  ]},
+  { title:'🏡 Offres Particuliers', photos:[
+    {label:'Covering Cuisine', path:'img/offres/0.jpg', alt:'Covering cuisine sans démontage'},
+    {label:'Film Solaire Véranda', path:'img/offres/1.jpg', alt:'Film solaire véranda baies vitrées'},
+  ]},
+];
+
 let allPhotos = [];
-let currentIdx = null;
-// Modifications en attente : { path -> { b64, newAlt, label, altOnly } }
-const pending = {};
 
-function buildUI() {
+function buildPhotosGrid() {
   allPhotos = [];
-  const content = document.getElementById('content');
-  content.innerHTML = '';
+  const grid = document.getElementById('photos-grid');
+  grid.innerHTML = '';
 
-  SECTIONS.forEach(section => {
+  PHOTO_SECTIONS.forEach(sec => {
     const wrap = document.createElement('div');
-    wrap.innerHTML = `<div class="section-title">${section.title}</div>`;
-    const grid = document.createElement('div');
-    grid.className = 'grid' + (section.size === 'wide' ? ' wide' : '');
+    const title = document.createElement('div');
+    title.className = 'photo-section-title';
+    title.textContent = sec.title;
+    wrap.appendChild(title);
 
-    section.photos.forEach(photo => {
+    const g = document.createElement('div');
+    g.className = 'photo-grid';
+
+    sec.photos.forEach(photo => {
       const idx = allPhotos.length;
       allPhotos.push({...photo});
 
       const card = document.createElement('div');
-      card.className = 'photo-card';
-      card.id = 'card-' + idx;
+      card.className = 'pcard';
+      card.id = 'pcard-'+idx;
       card.innerHTML = `
-        <div class="photo-preview ${section.size === 'wide' ? 'tall' : 'short'}">
-          <img src="${photo.path}?t=${Date.now()}" alt="${photo.alt}"
-               onload="this.style.display='block';this.closest('.photo-preview').querySelector('.no-photo').style.display='none'"
-               onerror="this.style.display='none'">
-          <div class="no-photo"><div class="no-photo-icon">🖼️</div><div class="no-photo-txt">Pas de photo</div></div>
-          <div class="photo-overlay">📂 Glisser ou cliquer</div>
+        <div class="pcard-img">
+          <img src="${photo.path}?t=${Date.now()}" onload="this.style.display='block';this.closest('.pcard-img').querySelector('.no-img').style.display='none'" onerror="this.style.display='none'">
+          <div class="no-img">🖼️</div>
         </div>
-        <div class="photo-info">
-          <div class="photo-label">${photo.label}</div>
-          <div class="alt-field">
-            <div class="alt-label">Description SEO <span>ALT</span></div>
-            <textarea class="alt-input" id="alt-${idx}" placeholder="Ex: Film solaire posé sur façade bureau Lille..."
-              onchange="onAltChange(${idx})" oninput="onAltChange(${idx})"
-            >${photo.alt}</textarea>
-          </div>
-        </div>`;
-
-      card.querySelector('.photo-preview').onclick = () => openFile(idx);
+        <div class="pcard-info">
+          <div class="pcard-label">${photo.label}</div>
+          <div class="pcard-path">${photo.path}</div>
+        </div>
+        <input class="pcard-alt" placeholder="Description SEO (alt)..." value="${photo.alt}" 
+               onchange="onAltChange(${idx}, this.value)" oninput="onAltChange(${idx}, this.value)"
+               onclick="event.stopPropagation()">
+      `;
+      card.querySelector('.pcard-img').onclick = () => openPhoto(idx);
       card.ondragover = e => { e.preventDefault(); card.classList.add('drag-over'); };
       card.ondragleave = () => card.classList.remove('drag-over');
-      card.ondrop = e => { e.preventDefault(); card.classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f?.type.startsWith('image/')) stagePhoto(idx, f); };
-
-      grid.appendChild(card);
+      card.ondrop = e => { e.preventDefault(); card.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f?.type.startsWith('image/')) stagePhoto(idx,f); };
+      g.appendChild(card);
     });
 
-    wrap.appendChild(grid);
-    content.appendChild(wrap);
+    wrap.appendChild(g);
+    grid.appendChild(wrap);
   });
 }
 
-// Quand l'alt est modifié
-function onAltChange(idx) {
-  const newAlt = document.getElementById('alt-' + idx).value.trim();
+function onAltChange(idx, val) {
   const photo = allPhotos[idx];
-  if (newAlt === photo.alt) {
-    // Revenu à l'original — retirer si c'était uniquement un alt pending
-    if (pending[photo.path] && pending[photo.path].altOnly) {
-      delete pending[photo.path];
-    }
-    document.getElementById('alt-' + idx).classList.remove('changed');
-  } else {
-    document.getElementById('alt-' + idx).classList.add('changed');
-    if (!pending[photo.path]) {
-      pending[photo.path] = { altOnly: true, newAlt, label: photo.label };
-    } else {
-      pending[photo.path].newAlt = newAlt;
-    }
-  }
+  if (!photoPending[photo.path]) photoPending[photo.path] = { altOnly:true, newAlt:val, label:photo.label };
+  else photoPending[photo.path].newAlt = val;
   updatePendingUI();
 }
 
-// Stage une photo (preview local, pas encore pushé)
-function openFile(idx) { currentIdx = idx; document.getElementById('file-input').click(); }
+function openPhoto(idx) { currentPhotoIdx = idx; document.getElementById('file-input').click(); }
 document.getElementById('file-input').addEventListener('change', e => {
-  if (e.target.files[0]) stagePhoto(currentIdx, e.target.files[0]);
+  if (e.target.files[0] && currentPhotoIdx !== null) stagePhoto(currentPhotoIdx, e.target.files[0]);
   e.target.value = '';
 });
 
 async function stagePhoto(idx, file) {
   const photo = allPhotos[idx];
-  const b64 = await new Promise((res, rej) => {
-    const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.onerror = rej; r.readAsDataURL(file);
-  });
-
-  // Preview local
+  const b64 = await fileToB64(file);
   const url = URL.createObjectURL(file);
-  const card = document.getElementById('card-' + idx);
+  const card = document.getElementById('pcard-'+idx);
   const img = card.querySelector('img');
   img.src = url; img.style.display = 'block';
-  card.querySelector('.no-photo').style.display = 'none';
-
-  // Stocker en attente
-  const currentAlt = document.getElementById('alt-' + idx).value.trim();
-  pending[photo.path] = { b64, altOnly: false, newAlt: currentAlt, label: photo.label };
+  card.querySelector('.no-img').style.display = 'none';
   card.classList.add('pending');
-
-  // Dot
-  let dot = card.querySelector('.pending-dot');
-  if (!dot) { dot = document.createElement('div'); dot.className = 'pending-dot'; dot.textContent = '● À publier'; card.querySelector('.photo-preview').appendChild(dot); }
-
+  let dot = card.querySelector('.pdot');
+  if (!dot) { dot = document.createElement('div'); dot.className='pdot'; dot.textContent='● nouveau'; card.querySelector('.pcard-img').appendChild(dot); }
+  const currentAlt = card.querySelector('.pcard-alt').value;
+  photoPending[photo.path] = { b64, altOnly:false, newAlt:currentAlt, label:photo.label };
   updatePendingUI();
-  toast('info', `📋 "${photo.label}" prête — cliquez "Publier" pour mettre en ligne`);
+  toast('info', `"${photo.label}" en attente — cliquez Publier`);
 }
 
+function fileToB64(file) {
+  return new Promise((res,rej) => {
+    const r = new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(file);
+  });
+}
+
+// ── PENDING UI ──
 function updatePendingUI() {
-  const count = Object.keys(pending).length;
+  const tCount = Object.keys(textPending).length;
+  const pCount = Object.keys(photoPending).length;
+  const total = tCount + pCount;
   const badge = document.getElementById('pending-badge');
   const btn = document.getElementById('publish-btn');
-  if (count > 0) {
-    badge.textContent = `${count} modification${count > 1 ? 's' : ''} en attente`;
+  if (total > 0) {
+    badge.textContent = `${total} modification${total>1?'s':''} en attente`;
     badge.style.display = 'block';
     btn.style.display = 'block';
   } else {
@@ -328,98 +503,97 @@ function updatePendingUI() {
   }
 }
 
-// Publier tout via la Function serverless /api/upload
+// ── PUBLISH ──
 async function publishAll() {
-  const entries = Object.entries(pending);
-  if (!entries.length) return;
-
   const btn = document.getElementById('publish-btn');
-  btn.disabled = true; btn.textContent = `⏳ Publication...`;
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
 
   const password = sessionStorage.getItem('af_pwd');
 
-  // Construire la liste des fichiers à uploader
-  const files = entries
-    .filter(([_, c]) => !c.altOnly)
-    .map(([path, c]) => ({ path, b64: c.b64 }));
+  // 1. Préparer les fichiers images
+  const files = Object.entries(photoPending)
+    .filter(([_,c]) => !c.altOnly)
+    .map(([path,c]) => ({ path, b64:c.b64 }));
 
-  // Construire le index.html modifié (avec les nouveaux alt)
+  // 2. Récupérer index.html + appliquer les modifications texte et alt
   let indexContent = null, indexSha = null;
-  const altChanges = entries.filter(([_, c]) => c.newAlt !== undefined);
+  const hasTextChanges = Object.keys(textPending).length > 0;
+  const hasAltChanges = Object.values(photoPending).some(c => c.newAlt);
 
-  if (altChanges.length > 0) {
+  if (hasTextChanges || hasAltChanges) {
     try {
-      const r = await fetch(`https://api.github.com/repos/alexislecointe28-debug/Atout-Film/contents/index.html`);
+      const r = await fetch(`https://api.github.com/repos/${REPO}/contents/index.html`);
       const d = await r.json();
       indexSha = d.sha;
-      const b64 = d.content.replace(/\n/g, '');
-      const binary = Array.from(atob(b64), c => c.charCodeAt(0));
-      indexContent = new TextDecoder('utf-8').decode(new Uint8Array(binary));
+      const b = d.content.replace(/\n/g,'');
+      const bytes = Array.from(atob(b), c=>c.charCodeAt(0));
+      indexContent = new TextDecoder('utf-8').decode(new Uint8Array(bytes));
 
-      for (const [path, change] of altChanges) {
-        if (!change.newAlt) continue;
-        const escaped = path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // Appliquer les changements texte
+      for (const [uid, newText] of Object.entries(textPending)) {
+        // Remplacer le contenu de l'élément data-editable="uid"
         indexContent = indexContent.replace(
-          new RegExp(`(<img[^>]*src="${escaped}"[^>]*?)alt="[^"]*"`, 'g'),
+          new RegExp(`(data-editable="${uid}"[^>]*>)[\\s\\S]*?(<\\/[a-z0-9]+>)`, 'i'),
+          (m, open, close) => open + newText + close
+        );
+      }
+
+      // Appliquer les changements alt
+      for (const [path, change] of Object.entries(photoPending)) {
+        if (!change.newAlt) continue;
+        const esc = path.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+        indexContent = indexContent.replace(
+          new RegExp(`(<img[^>]*src="${esc}"[^>]*?)alt="[^"]*"`, 'g'),
           `$1alt="${change.newAlt}"`
         );
         indexContent = indexContent.replace(
-          new RegExp(`(<img[^>]*?)alt="[^"]*"([^>]*src="${escaped}")`, 'g'),
+          new RegExp(`(<img[^>]*?)alt="[^"]*"([^>]*src="${esc}")`, 'g'),
           `$1alt="${change.newAlt}"$2`
         );
       }
     } catch(e) {
-      console.warn('Impossible de lire index.html:', e);
+      toast('error','❌ Erreur lecture index.html'); btn.disabled=false; btn.textContent='🚀 Publier'; return;
     }
   }
 
   try {
     const res = await fetch('/api/upload', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password, files, indexHtml: indexContent, indexSha })
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ password, files, indexHtml:indexContent, indexSha })
     });
     const data = await res.json();
+    if (res.status===401) { toast('error','❌ Mot de passe refusé'); btn.disabled=false; btn.textContent='🚀 Publier'; return; }
 
-    if (res.status === 401) {
-      toast('error', '❌ Mot de passe refusé par le serveur');
-      btn.disabled = false; btn.textContent = '🚀 Publier les modifications';
-      return;
-    }
+    const ok = data.results?.filter(r=>r.ok).length || 0;
+    const err = data.results?.filter(r=>!r.ok).length || 0;
 
-    const allOk = data.results?.every(r => r.ok);
-    const doneCount = data.results?.filter(r => r.ok).length || 0;
-    const errCount = data.results?.filter(r => !r.ok).length || 0;
-
-    // Nettoyer l'UI
-    for (const path of Object.keys(pending)) {
-      delete pending[path];
-      allPhotos.forEach((p, idx) => {
-        if (p.path === path) {
-          document.getElementById('card-'+idx)?.classList.remove('pending');
-          document.getElementById('card-'+idx)?.querySelector('.pending-dot')?.remove();
-          const newAlt = document.getElementById('alt-'+idx)?.value;
-          if (newAlt) allPhotos[idx].alt = newAlt;
-          document.getElementById('alt-'+idx)?.classList.remove('changed');
+    // Nettoyer
+    for (const uid of Object.keys(textPending)) delete textPending[uid];
+    for (const path of Object.keys(photoPending)) {
+      delete photoPending[path];
+      allPhotos.forEach((p,idx) => {
+        if (p.path===path) {
+          document.getElementById('pcard-'+idx)?.classList.remove('pending');
+          document.getElementById('pcard-'+idx)?.querySelector('.pdot')?.remove();
         }
       });
     }
 
     updatePendingUI();
-    if (allOk) toast('success', `✅ ${doneCount} modification${doneCount>1?'s':''} publiée${doneCount>1?'s':''} — Vercel redéploie en ~30s`);
-    else toast('error', `⚠️ ${doneCount} réussie(s), ${errCount} erreur(s)`);
+    if (err===0) toast('success',`✅ ${ok} modification${ok>1?'s':''} publiée${ok>1?'s':''} — en ligne dans ~30s`);
+    else toast('error',`⚠️ ${ok} ok, ${err} erreur(s)`);
   } catch(e) {
-    toast('error', '❌ Erreur réseau : ' + e.message);
+    toast('error','❌ '+e.message);
   }
 
-  btn.disabled = false;
-  btn.textContent = '🚀 Publier les modifications';
+  btn.disabled=false; btn.textContent='🚀 Publier';
 }
 
 function toast(type, msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.className = `toast show ${type}`;
-  setTimeout(() => t.className = 'toast', 6000);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast show ${type}`;
+  setTimeout(()=>t.className='toast',6000);
 }
 </script>
 </body>
