@@ -125,8 +125,6 @@
 
 <script>
 const PASSWORD = 'atoutfilm2025';
-const REPO = 'alexislecointe28-debug/Atout-Film';
-let TOKEN = '';
 
 const SECTIONS = [
   { title: '📸 Chantiers — Film Solaire', size: 'wide', photos: [
@@ -196,20 +194,16 @@ const SECTIONS = [
 // LOGIN
 function doLogin() {
   const pwd = document.getElementById('pwd').value;
-  const tok = document.getElementById('tok').value.trim();
   const err = document.getElementById('login-error');
   if (pwd !== PASSWORD) { err.textContent = 'Mot de passe incorrect'; err.style.display='block'; return; }
-  if (!tok.startsWith('ghp_')) { err.textContent = 'Token GitHub invalide (doit commencer par ghp_)'; err.style.display='block'; return; }
-  TOKEN = tok;
   sessionStorage.setItem('af_auth', '1');
-  sessionStorage.setItem('af_tok', tok);
+  sessionStorage.setItem('af_pwd', pwd);
   document.getElementById('login').style.display = 'none';
   document.getElementById('admin').style.display = 'block';
   buildUI();
 }
-function logout() { sessionStorage.clear(); TOKEN = ''; location.reload(); }
-if (sessionStorage.getItem('af_auth') && sessionStorage.getItem('af_tok')) {
-  TOKEN = sessionStorage.getItem('af_tok');
+function logout() { sessionStorage.clear(); location.reload(); }
+if (sessionStorage.getItem('af_auth')) {
   document.getElementById('login').style.display = 'none';
   document.getElementById('admin').style.display = 'block';
   buildUI();
@@ -337,37 +331,36 @@ function updatePendingUI() {
   }
 }
 
-// Publier tout en une fois
+// Publier tout via la Function serverless /api/upload
 async function publishAll() {
   const entries = Object.entries(pending);
   if (!entries.length) return;
 
   const btn = document.getElementById('publish-btn');
-  btn.disabled = true; btn.textContent = `⏳ Publication 0/${entries.length}...`;
+  btn.disabled = true; btn.textContent = `⏳ Publication...`;
 
-  // 1. Récupérer index.html actuel pour mettre à jour les alt
+  const password = sessionStorage.getItem('af_pwd');
+
+  // Construire la liste des fichiers à uploader
+  const files = entries
+    .filter(([_, c]) => !c.altOnly)
+    .map(([path, c]) => ({ path, b64: c.b64 }));
+
+  // Construire le index.html modifié (avec les nouveaux alt)
   let indexContent = null, indexSha = null;
-  try {
-    const r = await fetch(`https://api.github.com/repos/${REPO}/contents/index.html`, { headers: { Authorization: `token ${TOKEN}` }});
-    const d = await r.json();
-    indexSha = d.sha;
-    // Décoder
-    const b64 = d.content.replace(/\n/g,'');
-    const binary = Array.from(atob(b64), c => c.charCodeAt(0));
-    indexContent = new TextDecoder('utf-8').decode(new Uint8Array(binary));
-  } catch(e) {
-    toast('error', '❌ Impossible de lire index.html : ' + e.message);
-    btn.disabled = false; btn.textContent = '🚀 Publier les modifications';
-    return;
-  }
+  const altChanges = entries.filter(([_, c]) => c.newAlt !== undefined);
 
-  let done = 0, errors = 0;
-
-  for (const [path, change] of entries) {
+  if (altChanges.length > 0) {
     try {
-      // Mettre à jour le alt dans index.html si nécessaire
-      if (change.newAlt !== undefined && change.newAlt !== null) {
-        // Remplacer alt="..." pour toutes les occurrences de cette image
+      const r = await fetch(`https://api.github.com/repos/alexislecointe28-debug/Atout-Film/contents/index.html`);
+      const d = await r.json();
+      indexSha = d.sha;
+      const b64 = d.content.replace(/\n/g, '');
+      const binary = Array.from(atob(b64), c => c.charCodeAt(0));
+      indexContent = new TextDecoder('utf-8').decode(new Uint8Array(binary));
+
+      for (const [path, change] of altChanges) {
+        if (!change.newAlt) continue;
         const escaped = path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         indexContent = indexContent.replace(
           new RegExp(`(<img[^>]*src="${escaped}"[^>]*?)alt="[^"]*"`, 'g'),
@@ -378,68 +371,52 @@ async function publishAll() {
           `$1alt="${change.newAlt}"$2`
         );
       }
-
-      // Uploader le fichier image (si pas altOnly)
-      if (!change.altOnly) {
-        let sha = null;
-        try {
-          const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, { headers: { Authorization: `token ${TOKEN}` }});
-          if (r.ok) sha = (await r.json()).sha;
-        } catch(e) {}
-
-        const body = { message: `photo: update ${path}`, content: change.b64 };
-        if (sha) body.sha = sha;
-        const res = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
-          method: 'PUT',
-          headers: { Authorization: `token ${TOKEN}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-        const data = await res.json();
-        if (!data.commit) { errors++; continue; }
-      }
-
-      done++;
-      btn.textContent = `⏳ ${done}/${entries.length}...`;
-    } catch(e) { errors++; }
+    } catch(e) {
+      console.warn('Impossible de lire index.html:', e);
+    }
   }
 
-  // 2. Pousser index.html avec les nouveaux alt
   try {
-    const encoder = new TextEncoder();
-    const bytes = encoder.encode(indexContent);
-    let binary = '';
-    for (let i = 0; i < bytes.length; i += 32768) binary += String.fromCharCode(...bytes.slice(i, i+32768));
-    const newB64 = btoa(binary);
-
-    await fetch(`https://api.github.com/repos/${REPO}/contents/index.html`, {
-      method: 'PUT',
-      headers: { Authorization: `token ${TOKEN}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: 'seo: update image alt attributes', content: newB64, sha: indexSha })
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password, files, indexHtml: indexContent, indexSha })
     });
+    const data = await res.json();
+
+    if (res.status === 401) {
+      toast('error', '❌ Mot de passe refusé par le serveur');
+      btn.disabled = false; btn.textContent = '🚀 Publier les modifications';
+      return;
+    }
+
+    const allOk = data.results?.every(r => r.ok);
+    const doneCount = data.results?.filter(r => r.ok).length || 0;
+    const errCount = data.results?.filter(r => !r.ok).length || 0;
+
+    // Nettoyer l'UI
+    for (const path of Object.keys(pending)) {
+      delete pending[path];
+      allPhotos.forEach((p, idx) => {
+        if (p.path === path) {
+          document.getElementById('card-'+idx)?.classList.remove('pending');
+          document.getElementById('card-'+idx)?.querySelector('.pending-dot')?.remove();
+          const newAlt = document.getElementById('alt-'+idx)?.value;
+          if (newAlt) allPhotos[idx].alt = newAlt;
+          document.getElementById('alt-'+idx)?.classList.remove('changed');
+        }
+      });
+    }
+
+    updatePendingUI();
+    if (allOk) toast('success', `✅ ${doneCount} modification${doneCount>1?'s':''} publiée${doneCount>1?'s':''} — Vercel redéploie en ~30s`);
+    else toast('error', `⚠️ ${doneCount} réussie(s), ${errCount} erreur(s)`);
   } catch(e) {
-    toast('error', '❌ Erreur mise à jour index.html : ' + e.message);
-  }
-
-  // Nettoyer
-  for (const path of Object.keys(pending)) {
-    delete pending[path];
-    allPhotos.forEach((p, idx) => {
-      if (p.path === path) {
-        document.getElementById('card-'+idx)?.classList.remove('pending');
-        document.getElementById('card-'+idx)?.querySelector('.pending-dot')?.remove();
-        // Mettre à jour l'alt stocké
-        const newAlt = document.getElementById('alt-'+idx)?.value;
-        if (newAlt) allPhotos[idx].alt = newAlt;
-        document.getElementById('alt-'+idx)?.classList.remove('changed');
-      }
-    });
+    toast('error', '❌ Erreur réseau : ' + e.message);
   }
 
   btn.disabled = false;
-  updatePendingUI();
-
-  if (errors === 0) toast('success', `✅ ${done} modification${done>1?'s':''} publiée${done>1?'s':''} — Vercel redéploie en ~30s`);
-  else toast('error', `⚠️ ${done} réussie(s), ${errors} erreur(s)`);
+  btn.textContent = '🚀 Publier les modifications';
 }
 
 function toast(type, msg) {
