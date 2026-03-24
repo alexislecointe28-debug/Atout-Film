@@ -93,10 +93,7 @@
     <h1>🔐 Admin — Atout Film</h1>
     <p>Gestion des photos et visuels du site.</p>
     <label>Mot de passe</label>
-    <input type="password" id="pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')document.getElementById('tok').focus()">
-    <label>Token GitHub</label>
-    <input type="password" id="tok" placeholder="ghp_..." onkeydown="if(event.key==='Enter')doLogin()">
-    <p class="hint">Token stocké en mémoire de session uniquement.</p>
+    <input type="password" id="pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
     <button class="btn-login" onclick="doLogin()">Accéder à l'admin</button>
     <div id="login-error"></div>
   </div>
