@@ -2719,7 +2719,7 @@ if (location.hash === '#signaletique') showPage('page-sg');
 
     <!-- Open-space Lille -->
     <div class="aa-card">
-      <div class="aa-visual">
+      <div class="aa-visual" data-before="img/aa/fs/0_before.jpg" data-after="img/aa/fs/0_after.jpg">
         <div class="aa-half aa-before">
           <svg viewBox="0 0 150 200" width="100%" height="100%" style="position:absolute;inset:0">
             <rect width="150" height="200" fill="none"/>
@@ -2760,7 +2760,7 @@ if (location.hash === '#signaletique') showPage('page-sg');
 
     <!-- Showroom Lyon -->
     <div class="aa-card">
-      <div class="aa-visual">
+      <div class="aa-visual" data-before="img/aa/fs/1_before.jpg" data-after="img/aa/fs/1_after.jpg">
         <div class="aa-half aa-before">
           <svg viewBox="0 0 150 200" width="100%" height="100%" style="position:absolute;inset:0">
             <rect width="150" height="200" fill="none"/>
@@ -3078,7 +3078,7 @@ if (location.hash === '#signaletique') showPage('page-sg');
 
     <!-- Cloison bureau -->
     <div class="aa-card">
-      <div class="aa-visual">
+      <div class="aa-visual" data-before="img/aa/vt/0_before.jpg" data-after="img/aa/vt/0_after.jpg">
         <div class="aa-half" style="background:linear-gradient(160deg,#1a1a2e,#111)">
           <svg viewBox="0 0 150 200" width="100%" height="100%" style="position:absolute;inset:0">
             <rect width="150" height="200" fill="none"/>
@@ -3111,7 +3111,7 @@ if (location.hash === '#signaletique') showPage('page-sg');
 
     <!-- Vitrine commerce -->
     <div class="aa-card">
-      <div class="aa-visual">
+      <div class="aa-visual" data-before="img/aa/vt/1_before.jpg" data-after="img/aa/vt/1_after.jpg">
         <div class="aa-half" style="background:linear-gradient(160deg,#111,#1a1a1a)">
           <svg viewBox="0 0 150 200" width="100%" height="100%" style="position:absolute;inset:0">
             <rect width="150" height="200" fill="none"/>
@@ -3405,7 +3405,7 @@ if (location.hash === '#signaletique') showPage('page-sg');
   <div class="aa-cards">
 
     <div class="aa-card">
-      <div class="aa-visual">
+      <div class="aa-visual" data-before="img/aa/st/0_before.jpg" data-after="img/aa/st/0_after.jpg">
         <div class="aa-half" style="background:linear-gradient(160deg,#1a0a00,#2a1500)">
           <svg viewBox="0 0 150 200" width="100%" height="100%" style="position:absolute;inset:0">
             <rect width="150" height="200" fill="none"/>
@@ -3456,7 +3456,7 @@ if (location.hash === '#signaletique') showPage('page-sg');
     </div>
 
     <div class="aa-card">
-      <div class="aa-visual">
+      <div class="aa-visual" data-before="img/aa/st/1_before.jpg" data-after="img/aa/st/1_after.jpg">
         <div class="aa-half" style="background:linear-gradient(160deg,#1a1a1a,#111)">
           <svg viewBox="0 0 150 200" width="100%" height="100%" style="position:absolute;inset:0">
             <rect width="150" height="200" fill="none"/>
@@ -3742,7 +3742,7 @@ if (location.hash === '#signaletique') showPage('page-sg');
   <div class="aa-cards">
 
     <div class="aa-card">
-      <div class="aa-visual">
+      <div class="aa-visual" data-before="img/aa/cv/0_before.jpg" data-after="img/aa/cv/0_after.jpg">
         <div class="aa-half" style="background:linear-gradient(160deg,#2a1a0a,#1a0a00)">
           <svg viewBox="0 0 150 200" width="100%" height="100%" style="position:absolute;inset:0">
             <rect width="150" height="200" fill="none"/>
@@ -3785,7 +3785,7 @@ if (location.hash === '#signaletique') showPage('page-sg');
     </div>
 
     <div class="aa-card">
-      <div class="aa-visual">
+      <div class="aa-visual" data-before="img/aa/cv/1_before.jpg" data-after="img/aa/cv/1_after.jpg">
         <div class="aa-half" style="background:linear-gradient(160deg,#1a1a1a,#222)">
           <svg viewBox="0 0 150 200" width="100%" height="100%" style="position:absolute;inset:0">
             <rect width="150" height="200" fill="none"/>
@@ -4407,6 +4407,38 @@ document.querySelectorAll('.aa-visual').forEach(function(el, idx) {
   el.dataset.sliderIdx = idx;
   var after = el.querySelector('.aa-after');
   if (!after) return;
+
+  // Charger les vraies photos si disponibles
+  var beforePath = el.dataset.before;
+  var afterPath  = el.dataset.after;
+  if (beforePath) {
+    var imgB = new Image();
+    imgB.onload = function() {
+      var svg = el.querySelector('.aa-before svg');
+      if (svg) svg.style.display = 'none';
+      var existing = el.querySelector('.aa-before img.aa-real');
+      if (!existing) {
+        imgB.className = 'aa-real';
+        imgB.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+        el.querySelector('.aa-before').appendChild(imgB);
+      }
+    };
+    imgB.src = beforePath;
+  }
+  if (afterPath) {
+    var imgA = new Image();
+    imgA.onload = function() {
+      var svg = el.querySelector('.aa-after svg');
+      if (svg) svg.style.display = 'none';
+      var existing = el.querySelector('.aa-after img.aa-real');
+      if (!existing) {
+        imgA.className = 'aa-real';
+        imgA.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+        el.querySelector('.aa-after').appendChild(imgA);
+      }
+    };
+    imgA.src = afterPath;
+  }
 
   // S'assurer que le handle existe
   if (!el.querySelector('.aa-handle')) {

@@ -148,6 +148,23 @@ header h1 { font-size:.88rem; color:#C8960C; font-weight:700; }
 .page-btn.active { border-color:#C8960C77; color:#C8960C; background:#C8960C11; }
 .iframe-bar { gap:8px; flex-wrap:nowrap; }
 
+.aa-pair { background:#141414; border:1px solid #1e1e1e; border-radius:10px; overflow:hidden; margin-bottom:14px; }
+.aa-pair-title { padding:10px 12px 6px; font-size:.82rem; font-weight:700; border-bottom:1px solid #1a1a1a; }
+.aa-pair-title span { font-size:.68rem; color:#555; font-weight:400; margin-left:6px; }
+.aa-slots { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:#1a1a1a; }
+.aa-slot { background:#0d0d0d; cursor:pointer; transition:background .2s; }
+.aa-slot:hover { background:#141400; }
+.aa-slot.drag-over { background:#1a1500; outline:2px solid #C8960C; outline-offset:-2px; }
+.aa-slot.pending { outline:2px solid #C8960C77; }
+.aa-slot-img { height:100px; position:relative; overflow:hidden; }
+.aa-slot-img img { width:100%;height:100%;object-fit:cover;display:none; }
+.aa-slot-img .aa-no-img { position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;font-size:.65rem;color:#2a2a2a; }
+.aa-slot-badge { position:absolute;top:6px;left:6px;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.06em; }
+.aa-slot-badge.before { background:rgba(0,0,0,.7);color:#ff6644; }
+.aa-slot-badge.after  { background:rgba(0,0,0,.7);color:#44cc88; }
+.aa-slot-pdot { position:absolute;top:6px;right:6px;background:#C8960C;color:#000;font-size:.55rem;font-weight:800;padding:1px 5px;border-radius:100px; }
+.aa-slot-label { padding:6px 8px;font-size:.7rem;color:#444; }
+
 input[type=file] { display:none; }
 </style>
 </head>
@@ -228,6 +245,11 @@ input[type=file] { display:none; }
       <div class="photos-panel" id="photos-grid"></div>
     </div>
 
+  <!-- ONGLET AVANT/APRÈS -->
+    <div id="tab-aa" style="display:none;flex:1;flex-direction:column;overflow:hidden">
+      <div class="photos-panel" id="aa-grid"></div>
+    </div>
+
   </div>
 </div>
 
@@ -261,17 +283,21 @@ if (sessionStorage.getItem('af_auth')) {
 
 // ── INIT ──
 function initAdmin() {
-  // Écouter les messages de l'iframe
   window.addEventListener('message', onIframeMsg);
   buildPhotosGrid();
+  buildAAGrid();
 }
 
 // ── TABS ──
 function switchTab(tab) {
   document.getElementById('tab-text').classList.toggle('active-tab', tab==='text');
   document.getElementById('tab-photos').classList.toggle('active-tab', tab==='photos');
+  document.getElementById('tab-text').style.display = tab==='text' ? 'flex' : 'none';
+  document.getElementById('tab-photos').style.display = tab==='photos' ? 'flex' : 'none';
+  document.getElementById('tab-aa').style.display = tab==='aa' ? 'flex' : 'none';
   document.getElementById('tab-btn-text').classList.toggle('active', tab==='text');
   document.getElementById('tab-btn-photos').classList.toggle('active', tab==='photos');
+  document.getElementById('tab-btn-aa').classList.toggle('active', tab==='aa');
 }
 
 // ── DEVICE ──
@@ -492,9 +518,87 @@ function onAltChange(idx, val) {
 
 function openPhoto(idx) { currentPhotoIdx = idx; document.getElementById('file-input').click(); }
 document.getElementById('file-input').addEventListener('change', e => {
-  if (e.target.files[0] && currentPhotoIdx !== null) stagePhoto(currentPhotoIdx, e.target.files[0]);
+  if (e.target.files[0] && currentPhotoIdx !== null) {
+    if (currentPhotoType === 'aa') stageAA(currentPhotoIdx, e.target.files[0]);
+    else stagePhoto(currentPhotoIdx, e.target.files[0]);
+  }
   e.target.value = '';
 });
+
+const AA_DATA = [{"page": "Film Solaire", "items": [{"title": "Open-space, Lille — 340 m²", "before": "img/aa/fs/0_before.jpg", "after": "img/aa/fs/0_after.jpg"}, {"title": "Showroom mobilier, Lyon", "before": "img/aa/fs/1_before.jpg", "after": "img/aa/fs/1_after.jpg"}]}, {"page": "Vitrophanie", "items": [{"title": "Cloisons salle de réunion, Lyon", "before": "img/aa/vt/0_before.jpg", "after": "img/aa/vt/0_after.jpg"}, {"title": "Vitrine commerce, Lille", "before": "img/aa/vt/1_before.jpg", "after": "img/aa/vt/1_after.jpg"}]}, {"page": "Stores", "items": [{"title": "Open-space 120 postes, Lille", "before": "img/aa/st/0_before.jpg", "after": "img/aa/st/0_after.jpg"}, {"title": "Cabinet médical, Lyon", "before": "img/aa/st/1_before.jpg", "after": "img/aa/st/1_after.jpg"}]}, {"page": "Covering", "items": [{"title": "Façades cuisine restaurant, Lille", "before": "img/aa/cv/0_before.jpg", "after": "img/aa/cv/0_after.jpg"}, {"title": "Comptoir réception hôtel, Lyon", "before": "img/aa/cv/1_before.jpg", "after": "img/aa/cv/1_after.jpg"}]}];
+let allAA = []; // { path, label, type ('before'|'after') }
+
+function buildAAGrid() {
+  allAA = [];
+  const grid = document.getElementById('aa-grid');
+  grid.innerHTML = '<p style="color:#555;font-size:.8rem;margin-bottom:16px">Déposez une photo <strong style='color:#ff6644'>Avant</strong> et une photo <strong style='color:#44cc88'>Après</strong> sur chaque chantier. Le slider sera immédiatement visible sur le site.</p>';
+
+  AA_DATA.forEach(section => {
+    const secDiv = document.createElement('div');
+    secDiv.innerHTML = '<div class="photo-section-title">' + section.page + '</div>';
+
+    section.items.forEach(item => {
+      const pair = document.createElement('div');
+      pair.className = 'aa-pair';
+      pair.innerHTML = '<div class="aa-pair-title">' + item.title + '</div><div class="aa-slots" id="slots-' + allAA.length + '"></div>';
+
+      const slotsId = allAA.length;
+      const beforeIdx = allAA.length;
+      allAA.push({ path: item.before, label: 'Avant — ' + item.title, type: 'before' });
+      const afterIdx = allAA.length;
+      allAA.push({ path: item.after, label: 'Après — ' + item.title, type: 'after' });
+
+      secDiv.appendChild(pair);
+      grid.appendChild(secDiv);
+
+      // Construire les 2 slots après insertion dans le DOM
+      setTimeout(() => {
+        const slotsDiv = pair.querySelector('.aa-slots');
+        if (!slotsDiv) return;
+
+        [{ idx: beforeIdx, type: 'before', label: 'AVANT' }, { idx: afterIdx, type: 'after', label: 'APRÈS' }].forEach(s => {
+          const slot = document.createElement('div');
+          slot.className = 'aa-slot';
+          slot.id = 'aa-slot-' + s.idx;
+          slot.innerHTML = '<div class="aa-slot-img"><div class="aa-no-img"><span style="font-size:1.4rem;opacity:.25">' + (s.type==='before' ? '🔴' : '🟢') + '</span>' + s.label + '</div><span class="aa-slot-badge ' + s.type + '">' + s.label + '</span></div><div class="aa-slot-label">' + s.label + ' — cliquer ou glisser</div>';
+
+          const img = new Image();
+          img.onload = () => {
+            img.style.display = 'block';
+            slot.querySelector('.aa-no-img').style.display = 'none';
+          };
+          img.src = allAA[s.idx].path + '?t=' + Date.now();
+          slot.querySelector('.aa-slot-img').appendChild(img);
+
+          slot.onclick = () => { currentPhotoIdx = s.idx; currentPhotoType = 'aa'; document.getElementById('file-input').click(); };
+          slot.ondragover = e => { e.preventDefault(); slot.classList.add('drag-over'); };
+          slot.ondragleave = () => slot.classList.remove('drag-over');
+          slot.ondrop = e => { e.preventDefault(); slot.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f?.type.startsWith('image/')) stageAA(s.idx, f); };
+
+          slotsDiv.appendChild(slot);
+        });
+      }, 0);
+    });
+  });
+}
+
+let currentPhotoType = 'photo';
+
+async function stageAA(idx, file) {
+  const item = allAA[idx];
+  const b64 = await fileToB64(file);
+  const url = URL.createObjectURL(file);
+  const slot = document.getElementById('aa-slot-' + idx);
+  const img = slot.querySelector('img');
+  if (img) { img.src = url; img.style.display = 'block'; slot.querySelector('.aa-no-img').style.display='none'; }
+  slot.classList.add('pending');
+  let dot = slot.querySelector('.aa-slot-pdot');
+  if (!dot) { dot=document.createElement('span'); dot.className='aa-slot-pdot'; dot.textContent='● nouveau'; slot.querySelector('.aa-slot-img').appendChild(dot); }
+  photoPending[item.path] = { b64, altOnly:false, newAlt: item.label, label: item.label };
+  updatePendingUI();
+  toast('info', '"' + item.label + '" en attente — cliquez Publier');
+}
+
 
 async function stagePhoto(idx, file) {
   const photo = allPhotos[idx];
