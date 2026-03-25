@@ -531,7 +531,7 @@ let allAA = []; // { path, label, type ('before'|'after') }
 function buildAAGrid() {
   allAA = [];
   const grid = document.getElementById('aa-grid');
-  grid.innerHTML = '<p style="color:#555;font-size:.8rem;margin-bottom:16px">Déposez une photo <strong style='color:#ff6644'>Avant</strong> et une photo <strong style='color:#44cc88'>Après</strong> sur chaque chantier. Le slider sera immédiatement visible sur le site.</p>';
+  grid.innerHTML = '<p style="color:#555;font-size:.8rem;margin-bottom:16px">Déposez une photo <strong style="color:#ff6644">Avant</strong> et une photo <strong style="color:#44cc88">Après</strong> sur chaque chantier. Le slider sera immédiatement visible sur le site.</p>';
 
   AA_DATA.forEach(section => {
     const secDiv = document.createElement('div');
