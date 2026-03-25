@@ -3,193 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Atout Film — Admin</title>
+<title>Atout Film — Admin Photos</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:system-ui,sans-serif; background:#0a0a0a; color:#fff; height:100vh; overflow:hidden; }
+body { font-family:system-ui,sans-serif; background:#0a0a0a; color:#fff; min-height:100vh; }
 
 /* LOGIN */
-#login { display:flex; align-items:center; justify-content:center; height:100vh; }
+#login { display:flex; align-items:center; justify-content:center; min-height:100vh; }
 .login-card { background:#1a1a1a; border:1px solid #333; border-radius:16px; padding:40px; width:360px; }
 .login-card h1 { font-size:1.1rem; margin-bottom:6px; }
 .login-card p { color:#555; font-size:.82rem; margin-bottom:24px; }
 .lbl { display:block; font-size:.72rem; color:#555; text-transform:uppercase; letter-spacing:.06em; margin-bottom:5px; }
 .login-card input { width:100%; padding:11px 13px; background:#111; border:1px solid #2a2a2a; border-radius:8px; color:#fff; font-size:.93rem; margin-bottom:14px; outline:none; }
 .login-card input:focus { border-color:#C8960C; }
-.btn-primary { width:100%; padding:11px; background:#C8960C; color:#0a0a0a; font-weight:700; border:none; border-radius:8px; cursor:pointer; font-size:.95rem; }
-.btn-primary:hover { background:#E8B422; }
+.btn-login { width:100%; padding:11px; background:#C8960C; color:#0a0a0a; font-weight:700; border:none; border-radius:8px; cursor:pointer; font-size:.95rem; }
+.btn-login:hover { background:#E8B422; }
 #login-err { color:#ef4444; font-size:.78rem; margin-top:8px; display:none; }
 
-/* LAYOUT ADMIN */
-#admin { display:none; height:100vh; flex-direction:column; }
-header {
-  background:#111; border-bottom:1px solid #1e1e1e;
-  padding:0 16px; height:48px; display:flex; align-items:center;
-  justify-content:space-between; flex-shrink:0; z-index:100;
-}
-header h1 { font-size:.88rem; color:#C8960C; font-weight:700; }
+/* ADMIN */
+#admin { display:none; flex-direction:column; min-height:100vh; }
+header { background:#111; border-bottom:1px solid #1e1e1e; padding:0 24px; height:52px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+header h1 { font-size:.9rem; color:#C8960C; font-weight:700; }
 .hdr-right { display:flex; gap:8px; align-items:center; }
-#pending-badge { display:none; background:#C8960C22; border:1px solid #C8960C55; color:#C8960C; padding:4px 10px; border-radius:5px; font-size:.72rem; font-weight:700; }
-#publish-btn { display:none; background:#C8960C; color:#0a0a0a; border:none; padding:7px 16px; border-radius:6px; font-weight:700; font-size:.8rem; cursor:pointer; }
+#pending-badge { display:none; background:#C8960C22; border:1px solid #C8960C55; color:#C8960C; padding:4px 12px; border-radius:5px; font-size:.75rem; font-weight:700; }
+#publish-btn { display:none; background:#C8960C; color:#0a0a0a; border:none; padding:8px 18px; border-radius:6px; font-weight:700; font-size:.82rem; cursor:pointer; }
 #publish-btn:hover { background:#E8B422; }
 #publish-btn:disabled { opacity:.5; cursor:default; }
 .tab-bar { display:flex; gap:2px; }
-.tab { padding:6px 14px; border-radius:5px; font-size:.78rem; cursor:pointer; color:#555; border:none; background:none; }
+.tab { padding:6px 16px; border-radius:5px; font-size:.8rem; cursor:pointer; color:#555; border:none; background:none; }
 .tab.active { background:#1e1e1e; color:#fff; }
 .logout { background:none; border:1px solid #2a2a2a; color:#555; padding:5px 12px; border-radius:5px; cursor:pointer; font-size:.75rem; }
 .logout:hover { border-color:#C8960C; color:#C8960C; }
 
-/* WORKSPACE */
-#workspace { display:flex; flex:1; overflow:hidden; }
+/* CONTENU */
+main { max-width:1100px; margin:0 auto; padding:28px 24px; }
+.tip { background:#1a1500; border:1px solid #C8960C33; border-radius:8px; padding:10px 14px; font-size:.78rem; color:#C8960C99; margin-bottom:28px; line-height:1.6; }
+.section-title { font-size:.7rem; text-transform:uppercase; letter-spacing:.1em; color:#C8960C; margin:28px 0 12px; padding-bottom:7px; border-bottom:1px solid #1e1e1e; }
 
-/* IFRAME */
-#iframe-wrap {
-  flex:1; position:relative; background:#1a1a1a;
-  display:flex; flex-direction:column;
-  border-right:1px solid #1e1e1e;
-}
-.iframe-bar {
-  background:#141414; border-bottom:1px solid #1e1e1e;
-  padding:6px 12px; display:flex; align-items:center; gap:8px; flex-shrink:0;
-}
-.iframe-bar span { font-size:.7rem; color:#444; font-family:monospace; }
-.device-btns { display:flex; gap:4px; margin-left:auto; }
-.dev-btn { background:none; border:1px solid #2a2a2a; color:#555; padding:3px 8px; border-radius:4px; font-size:.68rem; cursor:pointer; }
-.dev-btn.active { border-color:#C8960C55; color:#C8960C; }
-#iframe-container { flex:1; display:flex; justify-content:center; overflow:auto; background:#2a2a2a; padding:0; }
-#site-iframe { border:none; background:#fff; transition:width .2s; }
+/* GRILLE PHOTOS */
+.photo-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:12px; }
+.photo-grid.wide { grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); }
 
-/* PANEL */
-#panel {
-  width:320px; flex-shrink:0; display:flex; flex-direction:column;
-  background:#0f0f0f; overflow:hidden;
-}
-#panel-header {
-  padding:14px 16px 10px; border-bottom:1px solid #1a1a1a; flex-shrink:0;
-}
-#panel-header h3 { font-size:.82rem; color:#888; font-weight:400; }
-#panel-hint {
-  flex:1; display:flex; flex-direction:column; align-items:center;
-  justify-content:center; gap:10px; color:#2a2a2a; text-align:center; padding:20px;
-}
-#panel-hint .hint-icon { font-size:2.5rem; opacity:.4; }
-#panel-hint p { font-size:.78rem; line-height:1.6; }
-#panel-form { flex:1; display:none; flex-direction:column; overflow:hidden; }
-#panel-form-inner { flex:1; overflow-y:auto; padding:14px 16px; display:flex; flex-direction:column; gap:12px; }
-.field-group { display:flex; flex-direction:column; gap:4px; }
-.field-lbl { font-size:.68rem; color:#555; text-transform:uppercase; letter-spacing:.06em; display:flex; align-items:center; justify-content:space-between; }
-.field-lbl .tag { background:#1e1e1e; color:#666; font-size:.6rem; padding:1px 6px; border-radius:3px; }
-.field-input, .field-textarea { width:100%; background:#1a1a1a; border:1px solid #222; border-radius:6px; color:#fff; font-size:.85rem; padding:8px 10px; outline:none; font-family:system-ui; }
-.field-input:focus, .field-textarea:focus { border-color:#C8960C55; }
-.field-textarea { resize:vertical; min-height:80px; line-height:1.5; }
-.field-textarea.tall { min-height:120px; }
-.alt-field { display:flex; flex-direction:column; gap:4px; }
-.alt-lbl { font-size:.66rem; color:#3a3a3a; display:flex; align-items:center; gap:6px; }
-.alt-lbl .seo { background:#1e3a1e; color:#4ade80; font-size:.58rem; padding:1px 5px; border-radius:3px; font-weight:700; }
-.alt-input { width:100%; background:#111; border:1px solid #1e1e1e; border-radius:5px; color:#888; font-size:.72rem; padding:6px 8px; outline:none; resize:none; height:52px; font-family:system-ui; line-height:1.4; }
-.alt-input:focus { border-color:#C8960C44; color:#ccc; }
-
-/* Photo drop zone */
-.drop-zone {
-  border:2px dashed #2a2a2a; border-radius:8px;
-  padding:20px; text-align:center; cursor:pointer;
-  transition:all .2s; position:relative; overflow:hidden;
-}
-.drop-zone:hover, .drop-zone.drag-over { border-color:#C8960C; background:rgba(200,150,12,.04); }
-.drop-zone img { width:100%; max-height:140px; object-fit:cover; border-radius:4px; display:none; margin-bottom:8px; }
-.drop-zone-txt { font-size:.75rem; color:#444; display:flex; flex-direction:column; align-items:center; gap:5px; }
-.drop-zone-txt span { font-size:1.5rem; }
-.dz-hint { font-size:.65rem; color:#333; }
-.dz-changed { font-size:.65rem; color:#C8960C; font-weight:600; margin-top:4px; display:none; }
-
-#panel-actions { padding:12px 16px; border-top:1px solid #1a1a1a; display:none; flex-shrink:0; }
-.btn-apply { width:100%; padding:9px; background:#1e1e1e; border:1px solid #333; color:#ccc; border-radius:7px; cursor:pointer; font-size:.82rem; font-weight:600; transition:all .2s; }
-.btn-apply:hover { border-color:#C8960C55; color:#C8960C; }
-
-/* ONGLET PHOTOS */
-#tab-photos { display:none; flex:1; flex-direction:column; overflow:hidden; }
-#tab-photos.active-tab { display:flex; }
-#tab-text { display:flex; flex:1; overflow:hidden; }
-#tab-text.active-tab { display:flex; }
-
-.photos-panel { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:24px; }
-.photo-section-title { font-size:.7rem; text-transform:uppercase; letter-spacing:.1em; color:#C8960C; margin-bottom:10px; padding-bottom:6px; border-bottom:1px solid #1e1e1e; }
-.photo-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
-.photo-grid.wide { grid-template-columns:repeat(2,1fr); }
-.pcard { background:#141414; border:1px solid #1e1e1e; border-radius:8px; overflow:hidden; cursor:pointer; transition:border-color .2s; }
+.pcard { background:#141414; border:1px solid #1e1e1e; border-radius:9px; overflow:hidden; cursor:pointer; transition:border-color .2s; }
 .pcard:hover { border-color:#C8960C44; }
 .pcard.pending { border-color:#C8960C77; }
 .pcard.drag-over { border-color:#C8960C; background:#1a1500; }
-.pcard-img { height:80px; background:#0d0d0d; position:relative; overflow:hidden; }
-.pcard-img img { width:100%; height:100%; object-fit:cover; display:none; }
-.pcard-img .no-img { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1.2rem; opacity:.2; }
-.pcard-img .pdot { position:absolute; top:5px; right:5px; background:#C8960C; color:#000; font-size:.55rem; font-weight:800; padding:1px 5px; border-radius:100px; }
-.pcard-info { padding:7px 8px; }
-.pcard-label { font-size:.74rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.pcard-path { font-size:.6rem; color:#333; font-family:monospace; }
-.pcard-alt { width:100%; background:#0d0d0d; border:none; border-top:1px solid #1a1a1a; color:#555; font-size:.68rem; padding:5px 8px; outline:none; font-family:system-ui; }
+.pcard-img { position:relative; background:#0d0d0d; overflow:hidden; }
+.pcard-img.tall { height:120px; }
+.pcard-img.short { height:90px; }
+.pcard-img img { width:100%;height:100%;object-fit:cover;display:none; }
+.pcard-img .no-img { position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem;opacity:.2; }
+.pcard-img .pdot { position:absolute;top:5px;right:5px;background:#C8960C;color:#000;font-size:.55rem;font-weight:800;padding:1px 6px;border-radius:100px; }
+.pcard-info { padding:8px 10px; }
+.pcard-label { font-size:.78rem; font-weight:600; white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.pcard-path { font-size:.62rem; color:#333; font-family:monospace; margin-top:1px; }
+.pcard-alt { width:100%; background:#0d0d0d; border:none; border-top:1px solid #1a1a1a; color:#555; font-size:.68rem; padding:5px 9px; outline:none; font-family:system-ui; transition:all .15s; }
 .pcard-alt:focus { color:#ccc; background:#111; }
+.pcard-alt.changed { border-top-color:#C8960C33; background:#1a1500; color:#C8960C; }
 
-/* TOAST */
-.toast { position:fixed; bottom:20px; right:20px; padding:10px 16px; border-radius:8px; font-size:.8rem; font-weight:600; transform:translateY(60px); opacity:0; transition:all .25s; z-index:999; max-width:380px; }
-.toast.show { transform:translateY(0); opacity:1; }
-.toast.success { background:#14532d; border:1px solid #22c55e; color:#86efac; }
-.toast.error   { background:#450a0a; border:1px solid #ef4444; color:#fca5a5; }
-.toast.info    { background:#1a1500; border:1px solid #C8960C55; color:#C8960C; }
-
-/* SPINNER */
-.spinner { width:14px; height:14px; border:2px solid #333; border-top-color:#C8960C; border-radius:50%; animation:spin .7s linear infinite; display:inline-block; }
-@keyframes spin { to { transform:rotate(360deg); } }
-
-.page-nav { display:flex; gap:3px; flex-wrap:nowrap; overflow-x:auto; flex:1; scrollbar-width:none; }
-.page-nav::-webkit-scrollbar { display:none; }
-.page-btn { background:none; border:1px solid #1e1e1e; color:#444; padding:4px 10px; border-radius:5px; font-size:.72rem; cursor:pointer; white-space:nowrap; transition:all .15s; }
-.page-btn:hover { border-color:#C8960C44; color:#888; }
-.page-btn.active { border-color:#C8960C77; color:#C8960C; background:#C8960C11; }
-.iframe-bar { gap:8px; flex-wrap:nowrap; }
-
-.aa-pair { background:#141414; border:1px solid #1e1e1e; border-radius:10px; overflow:hidden; margin-bottom:14px; }
-.aa-pair-title { padding:10px 12px 6px; font-size:.82rem; font-weight:700; border-bottom:1px solid #1a1a1a; }
-.aa-pair-title span { font-size:.68rem; color:#555; font-weight:400; margin-left:6px; }
-.aa-slots { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:#1a1a1a; }
-.aa-slot { background:#0d0d0d; cursor:pointer; transition:background .2s; }
+/* AVANT/APRÈS */
+.aa-pair { background:#141414; border:1px solid #1e1e1e; border-radius:10px; overflow:hidden; margin-bottom:12px; }
+.aa-pair-title { padding:10px 12px 8px; font-size:.82rem; font-weight:700; border-bottom:1px solid #1a1a1a; display:flex; align-items:center; gap:8px; }
+.aa-pair-title span { font-size:.68rem; color:#555; font-weight:400; }
+.aa-slots { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:#111; }
+.aa-slot { background:#0d0d0d; cursor:pointer; transition:background .15s; }
 .aa-slot:hover { background:#141400; }
 .aa-slot.drag-over { background:#1a1500; outline:2px solid #C8960C; outline-offset:-2px; }
 .aa-slot.pending { outline:2px solid #C8960C77; }
-.aa-slot-img { height:100px; position:relative; overflow:hidden; }
+.aa-slot-img { height:110px; position:relative; overflow:hidden; }
 .aa-slot-img img { width:100%;height:100%;object-fit:cover;display:none; }
-.aa-slot-img .aa-no-img { position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;font-size:.65rem;color:#2a2a2a; }
-.aa-slot-badge { position:absolute;top:6px;left:6px;font-size:.6rem;font-weight:800;padding:2px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.06em; }
-.aa-slot-badge.before { background:rgba(0,0,0,.7);color:#ff6644; }
-.aa-slot-badge.after  { background:rgba(0,0,0,.7);color:#44cc88; }
-.aa-slot-pdot { position:absolute;top:6px;right:6px;background:#C8960C;color:#000;font-size:.55rem;font-weight:800;padding:1px 5px;border-radius:100px; }
-.aa-slot-label { padding:6px 8px;font-size:.7rem;color:#444; }
+.aa-slot-no { position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px; }
+.aa-slot-no .icon { font-size:1.4rem; opacity:.2; }
+.aa-slot-no .lbl { font-size:.65rem; color:#2a2a2a; }
+.aa-badge { position:absolute;top:6px;left:6px;font-size:.58rem;font-weight:800;padding:2px 8px;border-radius:100px;text-transform:uppercase; }
+.aa-badge.before { background:rgba(0,0,0,.75);color:#ff7755; }
+.aa-badge.after  { background:rgba(0,0,0,.75);color:#55dd88; }
+.aa-pdot { position:absolute;top:6px;right:6px;background:#C8960C;color:#000;font-size:.52rem;font-weight:800;padding:1px 5px;border-radius:100px; }
+.aa-slot-lbl { padding:6px 9px;font-size:.7rem;color:#444; }
+
+/* SPINNER / TOAST */
+.spinner { width:14px;height:14px;border:2px solid #333;border-top-color:#C8960C;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.toast { position:fixed;bottom:20px;right:20px;padding:10px 16px;border-radius:8px;font-size:.8rem;font-weight:600;transform:translateY(60px);opacity:0;transition:all .25s;z-index:999;max-width:400px; }
+.toast.show { transform:translateY(0);opacity:1; }
+.toast.success { background:#14532d;border:1px solid #22c55e;color:#86efac; }
+.toast.error   { background:#450a0a;border:1px solid #ef4444;color:#fca5a5; }
+.toast.info    { background:#1a1500;border:1px solid #C8960C55;color:#C8960C; }
 
 input[type=file] { display:none; }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login">
   <div class="login-card">
-    <h1>🔐 Admin — Atout Film</h1>
-    <p>Éditeur de contenu et gestion des photos</p>
+    <h1>📸 Admin — Atout Film</h1>
+    <p>Gestion des photos et visuels du site</p>
     <label class="lbl">Mot de passe</label>
     <input type="password" id="pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="btn-primary" onclick="doLogin()">Accéder à l'admin</button>
+    <button class="btn-login" onclick="doLogin()">Accéder</button>
     <div id="login-err">Mot de passe incorrect</div>
   </div>
 </div>
 
-<!-- ADMIN -->
 <div id="admin">
   <header>
     <div style="display:flex;align-items:center;gap:16px">
-      <h1>✏️ Atout Film — Admin</h1>
+      <h1>📸 Atout Film — Admin</h1>
       <div class="tab-bar">
-        <button class="tab active" id="tab-btn-text" onclick="switchTab('text')">Textes & Contenu</button>
-        <button class="tab" id="tab-btn-photos" onclick="switchTab('photos')">Photos</button>
+        <button class="tab active" id="tab-btn-photos" onclick="switchTab('photos')">Photos</button>
+        <button class="tab" id="tab-btn-aa" onclick="switchTab('aa')">Avant / Après</button>
       </div>
     </div>
     <div class="hdr-right">
@@ -199,58 +122,20 @@ input[type=file] { display:none; }
     </div>
   </header>
 
-  <div id="workspace">
-
-    <!-- ONGLET TEXTES : iframe + panel -->
-    <div id="tab-text" class="active-tab">
-      <div id="iframe-wrap">
-        <div class="iframe-bar">
-          <div class="page-nav" id="page-nav">
-            <button class="page-btn active" onclick="navTo('/', this)">🏠 Accueil Pro</button>
-            <button class="page-btn" onclick="navTo('/#particuliers', this)">🏡 Particuliers</button>
-            <button class="page-btn" onclick="navTo('/#film-solaire', this)">☀️ Film Solaire</button>
-            <button class="page-btn" onclick="navTo('/#vitrophanie', this)">🪟 Vitrophanie</button>
-            <button class="page-btn" onclick="navTo('/#stores', this)">🏠 Stores</button>
-            <button class="page-btn" onclick="navTo('/#covering', this)">✨ Covering</button>
-            <button class="page-btn" onclick="navTo('/#film-securite', this)">🔒 Sécurité</button>
-            <button class="page-btn" onclick="navTo('/#signaletique', this)">🏷️ Signalétique</button>
-          </div>
-          <div class="device-btns">
-            <button class="dev-btn active" onclick="setDevice('desktop', event)">🖥</button>
-            <button class="dev-btn" onclick="setDevice('tablet', event)">📱</button>
-            <button class="dev-btn" onclick="setDevice('mobile', event)">📲</button>
-          </div>
-        </div>
-        <div id="iframe-container">
-          <iframe id="site-iframe" src="/" style="width:100%;height:100%"></iframe>
-        </div>
-      </div>
-      <div id="panel">
-        <div id="panel-header"><h3>Sélectionnez un élément dans le site</h3></div>
-        <div id="panel-hint">
-          <div class="hint-icon">👆</div>
-          <p>Cliquez sur n'importe quel titre ou texte dans le site pour l'éditer.<br><br>Les éléments éditables se surlignent en orange au survol.</p>
-        </div>
-        <div id="panel-form">
-          <div id="panel-form-inner"></div>
-          <div id="panel-actions">
-            <button class="btn-apply" onclick="applyText()">✓ Appliquer les modifications</button>
-          </div>
-        </div>
-      </div>
-    </div>
+  <main>
+    <p class="tip">Glissez une photo sur une carte ou cliquez dessus pour la remplacer. Renseignez la description SEO sous chaque photo. Quand tout est prêt, cliquez <strong style="color:#C8960C">🚀 Publier</strong> — 1 seul déploiement pour toutes les modifications.</p>
 
     <!-- ONGLET PHOTOS -->
     <div id="tab-photos">
-      <div class="photos-panel" id="photos-grid"></div>
+      <div id="photos-content"></div>
     </div>
 
-  <!-- ONGLET AVANT/APRÈS -->
-    <div id="tab-aa" style="display:none;flex:1;flex-direction:column;overflow:hidden">
-      <div class="photos-panel" id="aa-grid"></div>
+    <!-- ONGLET AVANT/APRÈS -->
+    <div id="tab-aa" style="display:none">
+      <p style="color:#555;font-size:.8rem;margin-bottom:20px">Déposez une photo <strong style="color:#ff7755">Avant</strong> et une photo <strong style="color:#55dd88">Après</strong> sur chaque chantier.</p>
+      <div id="aa-content"></div>
     </div>
-
-  </div>
+  </main>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -259,10 +144,6 @@ input[type=file] { display:none; }
 <script>
 const PASSWORD = 'atoutfilm2025';
 const REPO = 'alexislecointe28-debug/Atout-Film';
-let currentSelection = null; // { uid, tag, text, originalText }
-const textPending = {};  // uid -> newText
-const photoPending = {}; // path -> { b64, label, newAlt }
-let currentPhotoIdx = null;
 
 // ── LOGIN ──
 function doLogin() {
@@ -272,352 +153,282 @@ function doLogin() {
   sessionStorage.setItem('af_pwd', pwd);
   document.getElementById('login').style.display = 'none';
   document.getElementById('admin').style.display = 'flex';
-  initAdmin();
+  init();
 }
 function logout() { sessionStorage.clear(); location.reload(); }
 if (sessionStorage.getItem('af_auth')) {
   document.getElementById('login').style.display = 'none';
   document.getElementById('admin').style.display = 'flex';
-  initAdmin();
-}
-
-// ── INIT ──
-function initAdmin() {
-  window.addEventListener('message', onIframeMsg);
-  buildPhotosGrid();
-  buildAAGrid();
+  init();
 }
 
 // ── TABS ──
-function switchTab(tab) {
-  document.getElementById('tab-text').classList.toggle('active-tab', tab==='text');
-  document.getElementById('tab-photos').classList.toggle('active-tab', tab==='photos');
-  document.getElementById('tab-text').style.display = tab==='text' ? 'flex' : 'none';
-  document.getElementById('tab-photos').style.display = tab==='photos' ? 'flex' : 'none';
-  document.getElementById('tab-aa').style.display = tab==='aa' ? 'flex' : 'none';
-  document.getElementById('tab-btn-text').classList.toggle('active', tab==='text');
-  document.getElementById('tab-btn-photos').classList.toggle('active', tab==='photos');
-  document.getElementById('tab-btn-aa').classList.toggle('active', tab==='aa');
+function switchTab(t) {
+  document.getElementById('tab-photos').style.display = t==='photos' ? 'block' : 'none';
+  document.getElementById('tab-aa').style.display    = t==='aa'     ? 'block' : 'none';
+  document.getElementById('tab-btn-photos').classList.toggle('active', t==='photos');
+  document.getElementById('tab-btn-aa').classList.toggle('active', t==='aa');
 }
 
-// ── DEVICE ──
-function navTo(url, btn) {
-  document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const iframe = document.getElementById('site-iframe');
-  iframe.src = url;
-  // Réinjecter le bridge après chargement
-  iframe.onload = () => {
-    // Le bridge est déjà dans index.html, juste attendre
-    setTimeout(() => {
-      document.getElementById('panel-hint').style.display = 'flex';
-      document.getElementById('panel-form').style.display = 'none';
-      document.getElementById('panel-actions').style.display = 'none';
-      document.getElementById('panel-header').querySelector('h3').textContent = 'Sélectionnez un élément dans le site';
-    }, 300);
-  };
-}
-
-function setDevice(d, evt) {
-  const iframe = document.getElementById('site-iframe');
-  const container = document.getElementById('iframe-container');
-  document.querySelectorAll('.dev-btn').forEach(b => b.classList.remove('active'));
-  if (evt) evt.target.classList.add('active');
-  if (d === 'desktop') { iframe.style.width='100%'; iframe.style.height='100%'; container.style.padding='0'; }
-  else if (d === 'tablet') { iframe.style.width='768px'; iframe.style.height='1024px'; container.style.padding='20px'; }
-  else { iframe.style.width='390px'; iframe.style.height='844px'; container.style.padding='20px'; }
-}
-
-// ── IFRAME MESSAGES ──
-function onIframeMsg(e) {
-  if (e.data.type === 'af-select') selectElement(e.data);
-  if (e.data.type === 'af-ready') console.log('iframe bridge ready');
-}
-
-function selectElement(data) {
-  currentSelection = { uid: data.uid, tag: data.tag, text: data.text, originalText: data.text };
-  
-  const hint = document.getElementById('panel-hint');
-  const form = document.getElementById('panel-form');
-  const inner = document.getElementById('panel-form-inner');
-  const actions = document.getElementById('panel-actions');
-  const header = document.getElementById('panel-header');
-  
-  hint.style.display = 'none';
-  form.style.display = 'flex';
-  actions.style.display = 'block';
-  
-  header.querySelector('h3').textContent = `Édition — <${data.tag}>`;
-  
-  // Utiliser la valeur en attente si elle existe
-  const currentText = textPending[data.uid] !== undefined ? textPending[data.uid] : data.text;
-  
-  inner.innerHTML = `
-    <div class="field-group">
-      <div class="field-lbl">
-        Contenu <span class="tag">&lt;${data.tag}&gt;</span>
-      </div>
-      ${data.tag === 'p' || data.tag === 'div' 
-        ? `<textarea class="field-textarea tall" id="edit-text">${currentText}</textarea>`
-        : `<input class="field-input" type="text" id="edit-text" value="${currentText.replace(/"/g,'&quot;')}">`
-      }
-    </div>
-    <div style="font-size:.65rem;color:#333;line-height:1.6">
-      Les modifications s'affichent immédiatement dans le site ci-contre.<br>
-      Cliquez "Publier" pour mettre en ligne.
-    </div>
-  `;
-  
-  // Live preview : mettre à jour l'iframe en temps réel
-  const editField = document.getElementById('edit-text');
-  editField.addEventListener('input', function() {
-    const newText = this.value;
-    document.getElementById('site-iframe').contentWindow.postMessage({
-      type: 'af-update', uid: data.uid, text: newText
-    }, '*');
-  });
-  
-  editField.focus();
-  editField.select();
-}
-
-function applyText() {
-  if (!currentSelection) return;
-  const newText = document.getElementById('edit-text').value.trim();
-  if (!newText) return;
-  
-  if (newText !== currentSelection.originalText) {
-    textPending[currentSelection.uid] = newText;
-    currentSelection.originalText = newText;
-    updatePendingUI();
-    toast('info', `📋 Modification enregistrée — cliquez "Publier" pour mettre en ligne`);
-  }
-}
-
-// ── PHOTOS GRID ──
+// ── DONNÉES ──
 const PHOTO_SECTIONS = [
-  { title:'☀️ Film Solaire — Chantiers', photos:[
+  { title:'☀️ Film Solaire — Chantiers', size:'wide', photos:[
     {label:'Card accueil', path:'img/fs/1.jpg', alt:'Réalisation film solaire professionnel — Atout Film'},
-    {label:'Galerie 1', path:'img/fs/0.jpg', alt:'Réalisation film solaire'},
-    {label:'Galerie 2', path:'img/fs/2.jpg', alt:'Réalisation film solaire'},
-    {label:'Galerie 3', path:'img/fs/3.jpg', alt:'Réalisation film solaire'},
-    {label:'Galerie 4', path:'img/fs/4.jpg', alt:'Réalisation film solaire'},
-    {label:'Galerie 5', path:'img/fs/5.jpg', alt:'Réalisation film solaire'},
+    {label:'Galerie 1', path:'img/fs/0.jpg', alt:'Chantier film solaire'},
+    {label:'Galerie 2', path:'img/fs/2.jpg', alt:'Chantier film solaire'},
+    {label:'Galerie 3', path:'img/fs/3.jpg', alt:'Chantier film solaire'},
+    {label:'Galerie 4', path:'img/fs/4.jpg', alt:'Chantier film solaire'},
+    {label:'Galerie 5', path:'img/fs/5.jpg', alt:'Chantier film solaire'},
   ]},
-  { title:'🪟 Vitrophanie — Chantiers', photos:[
+  { title:'🪟 Vitrophanie — Chantiers', size:'wide', photos:[
     {label:'Card accueil', path:'img/vt/0.jpg', alt:'Réalisation vitrophanie — Atout Film'},
-    {label:'Galerie 1', path:'img/vt/1.jpg', alt:'Réalisation vitrophanie'},
-    {label:'Galerie 2', path:'img/vt/2.jpg', alt:'Réalisation vitrophanie'},
-    {label:'Galerie 3', path:'img/vt/3.jpg', alt:'Réalisation vitrophanie'},
+    {label:'Galerie 1', path:'img/vt/1.jpg', alt:'Chantier vitrophanie'},
+    {label:'Galerie 2', path:'img/vt/2.jpg', alt:'Chantier vitrophanie'},
+    {label:'Galerie 3', path:'img/vt/3.jpg', alt:'Chantier vitrophanie'},
   ]},
-  { title:'✨ Covering — Chantiers', photos:[
+  { title:'✨ Covering — Chantiers', size:'wide', photos:[
     {label:'Card accueil', path:'img/cv/0.jpg', alt:'Réalisation covering — Atout Film'},
-    {label:'Galerie 1', path:'img/cv/1.jpg', alt:'Réalisation covering'},
-    {label:'Galerie 2', path:'img/cv/2.jpg', alt:'Réalisation covering'},
-    {label:'Galerie 3', path:'img/cv/3.jpg', alt:'Réalisation covering'},
+    {label:'Galerie 1', path:'img/cv/1.jpg', alt:'Chantier covering'},
+    {label:'Galerie 2', path:'img/cv/2.jpg', alt:'Chantier covering'},
+    {label:'Galerie 3', path:'img/cv/3.jpg', alt:'Chantier covering'},
   ]},
-  { title:'🏠 Stores — Chantiers', photos:[
+  { title:'🏠 Stores — Chantiers', size:'wide', photos:[
     {label:'Card accueil', path:'img/st/0.jpg', alt:'Réalisation stores — Atout Film'},
-    {label:'Galerie 1', path:'img/st/1.jpg', alt:'Réalisation stores'},
-    {label:'Galerie 2', path:'img/st/2.jpg', alt:'Réalisation stores'},
-    {label:'Galerie 3', path:'img/st/3.jpg', alt:'Réalisation stores'},
-    {label:'Galerie 4', path:'img/st/4.jpg', alt:'Réalisation stores'},
+    {label:'Galerie 1', path:'img/st/1.jpg', alt:'Chantier stores'},
+    {label:'Galerie 2', path:'img/st/2.jpg', alt:'Chantier stores'},
+    {label:'Galerie 3', path:'img/st/3.jpg', alt:'Chantier stores'},
+    {label:'Galerie 4', path:'img/st/4.jpg', alt:'Chantier stores'},
   ]},
-  { title:'🏷️ Signalétique', photos:[
+  { title:'🏷️ Signalétique', size:'wide', photos:[
     {label:'Galerie 1', path:'img/sg/0.jpg', alt:'Réalisation signalétique — Atout Film'},
-    {label:'Galerie 2', path:'img/sg/1.jpg', alt:'Réalisation signalétique'},
+    {label:'Galerie 2', path:'img/sg/1.jpg', alt:'Chantier signalétique'},
   ]},
-  { title:'🎨 Gamme Film Solaire', photos:[
-    {label:'Neutre haute perf.', path:'img/gamme/fs/0.jpg', alt:'Film solaire neutre — Atout Film'},
-    {label:'Teinté bronze', path:'img/gamme/fs/1.jpg', alt:'Film solaire teinté bronze'},
-    {label:'Miroir extérieur', path:'img/gamme/fs/2.jpg', alt:'Film solaire miroir'},
-    {label:'3M Prestige', path:'img/gamme/fs/3.jpg', alt:'Film solaire 3M Prestige'},
-    {label:'Sécurité solaire', path:'img/gamme/fs/4.jpg', alt:'Film sécurité solaire'},
+  { title:'🎨 Gamme Film Solaire', size:'normal', photos:[
+    {label:'Neutre haute perf.', path:'img/gamme/fs/0.jpg', alt:'Film solaire neutre haute performance'},
+    {label:'Teinté bronze',      path:'img/gamme/fs/1.jpg', alt:'Film solaire teinté bronze'},
+    {label:'Miroir extérieur',   path:'img/gamme/fs/2.jpg', alt:'Film solaire miroir extérieur'},
+    {label:'3M Prestige',        path:'img/gamme/fs/3.jpg', alt:'Film solaire 3M Prestige'},
+    {label:'Sécurité solaire',   path:'img/gamme/fs/4.jpg', alt:'Film sécurité solaire combiné'},
   ]},
-  { title:'🎨 Gamme Stores', photos:[
-    {label:'Stores vénitiens', path:'img/gamme/st/0.jpg', alt:'Stores vénitiens — Atout Film'},
-    {label:'Stores enrouleurs', path:'img/gamme/st/1.jpg', alt:'Stores enrouleurs'},
-    {label:'Bandes verticales', path:'img/gamme/st/2.jpg', alt:'Bandes verticales'},
-    {label:'Stores plissés', path:'img/gamme/st/3.jpg', alt:'Stores plissés'},
+  { title:'🎨 Gamme Stores', size:'normal', photos:[
+    {label:'Stores vénitiens',  path:'img/gamme/st/0.jpg', alt:'Stores vénitiens sur mesure'},
+    {label:'Stores enrouleurs', path:'img/gamme/st/1.jpg', alt:'Stores enrouleurs sur mesure'},
+    {label:'Bandes verticales', path:'img/gamme/st/2.jpg', alt:'Bandes verticales occultantes'},
+    {label:'Stores plissés',    path:'img/gamme/st/3.jpg', alt:'Stores plissés verrière'},
   ]},
-  { title:'🎨 Gamme Vitrophanie', photos:[
-    {label:'Film dépoli', path:'img/gamme/vt/0.jpg', alt:'Film dépoli — Atout Film'},
-    {label:'Impression numérique', path:'img/gamme/vt/1.jpg', alt:'Impression numérique vitrage'},
-    {label:'Découpe logo', path:'img/gamme/vt/2.jpg', alt:'Découpe logo vitrage'},
-    {label:'Bandes sécurité', path:'img/gamme/vt/3.jpg', alt:'Bandes sécurité PMR'},
+  { title:'🎨 Gamme Vitrophanie', size:'normal', photos:[
+    {label:'Film dépoli',        path:'img/gamme/vt/0.jpg', alt:'Film dépoli professionnel'},
+    {label:'Impression numérique', path:'img/gamme/vt/1.jpg', alt:'Impression numérique sur vitrage'},
+    {label:'Découpe logo',       path:'img/gamme/vt/2.jpg', alt:'Découpe logo et lettrage'},
+    {label:'Bandes sécurité',    path:'img/gamme/vt/3.jpg', alt:'Bandes de sécurité PMR'},
   ]},
-  { title:'🎨 Finitions Covering', photos:[
-    {label:'Bois & chêne', path:'img/finitions/0.jpg', alt:'Covering bois chêne'},
-    {label:'Béton & pierre', path:'img/finitions/1.jpg', alt:'Covering béton ciré'},
-    {label:'Métal brossé', path:'img/finitions/2.jpg', alt:'Covering métal brossé'},
-    {label:'Marbre & granit', path:'img/finitions/3.jpg', alt:'Covering marbre granit'},
+  { title:'🎨 Finitions Covering', size:'normal', photos:[
+    {label:'Bois & chêne',    path:'img/finitions/0.jpg', alt:'Covering effet bois chêne'},
+    {label:'Béton & pierre',  path:'img/finitions/1.jpg', alt:'Covering effet béton ciré'},
+    {label:'Métal brossé',    path:'img/finitions/2.jpg', alt:'Covering effet métal brossé'},
+    {label:'Marbre & granit', path:'img/finitions/3.jpg', alt:'Covering effet marbre granit'},
     {label:'Uni mat & satin', path:'img/finitions/4.jpg', alt:'Covering uni mat satin'},
-    {label:'Ardoise & cuir', path:'img/finitions/5.jpg', alt:'Covering ardoise cuir'},
+    {label:'Ardoise & cuir',  path:'img/finitions/5.jpg', alt:'Covering effet ardoise cuir'},
   ]},
-  { title:'🏡 Offres Particuliers', photos:[
-    {label:'Covering Cuisine', path:'img/offres/0.jpg', alt:'Covering cuisine sans démontage'},
+  { title:'🏡 Offres Particuliers', size:'wide', photos:[
+    {label:'Covering Cuisine',     path:'img/offres/0.jpg', alt:'Covering cuisine sans démontage'},
     {label:'Film Solaire Véranda', path:'img/offres/1.jpg', alt:'Film solaire véranda baies vitrées'},
   ]},
 ];
 
+const AA_SECTIONS = [
+  { title:'☀️ Film Solaire', items:[
+    {title:'Open-space, Lille — 340 m²',       before:'img/aa/fs/0_before.jpg', after:'img/aa/fs/0_after.jpg'},
+    {title:'Showroom mobilier, Lyon',           before:'img/aa/fs/1_before.jpg', after:'img/aa/fs/1_after.jpg'},
+  ]},
+  { title:'🪟 Vitrophanie', items:[
+    {title:'Cloisons salle de réunion, Lyon',   before:'img/aa/vt/0_before.jpg', after:'img/aa/vt/0_after.jpg'},
+    {title:'Vitrine commerce, Lille',           before:'img/aa/vt/1_before.jpg', after:'img/aa/vt/1_after.jpg'},
+  ]},
+  { title:'🏠 Stores', items:[
+    {title:'Open-space 120 postes, Lille',      before:'img/aa/st/0_before.jpg', after:'img/aa/st/0_after.jpg'},
+    {title:'Cabinet médical, Lyon',             before:'img/aa/st/1_before.jpg', after:'img/aa/st/1_after.jpg'},
+  ]},
+  { title:'✨ Covering', items:[
+    {title:'Façades cuisine restaurant, Lille', before:'img/aa/cv/0_before.jpg', after:'img/aa/cv/0_after.jpg'},
+    {title:'Comptoir réception hôtel, Lyon',    before:'img/aa/cv/1_before.jpg', after:'img/aa/cv/1_after.jpg'},
+  ]},
+];
+
+// ── ÉTAT ──
 let allPhotos = [];
+let allAA = [];
+let currentIdx = null;
+let currentType = 'photo'; // 'photo' | 'aa'
+const pending = {}; // path -> { b64, altOnly, newAlt, label }
 
-function buildPhotosGrid() {
+// ── INIT ──
+function init() {
+  buildPhotos();
+  buildAA();
+}
+
+// ── BUILD PHOTOS ──
+function buildPhotos() {
   allPhotos = [];
-  const grid = document.getElementById('photos-grid');
-  grid.innerHTML = '';
-
+  const content = document.getElementById('photos-content');
+  content.innerHTML = '';
   PHOTO_SECTIONS.forEach(sec => {
     const wrap = document.createElement('div');
-    const title = document.createElement('div');
-    title.className = 'photo-section-title';
-    title.textContent = sec.title;
-    wrap.appendChild(title);
-
-    const g = document.createElement('div');
-    g.className = 'photo-grid';
-
-    sec.photos.forEach(photo => {
+    const t = document.createElement('div');
+    t.className = 'section-title';
+    t.textContent = sec.title;
+    wrap.appendChild(t);
+    const grid = document.createElement('div');
+    grid.className = 'photo-grid' + (sec.size === 'wide' ? ' wide' : '');
+    sec.photos.forEach(p => {
       const idx = allPhotos.length;
-      allPhotos.push({...photo});
-
-      const card = document.createElement('div');
-      card.className = 'pcard';
-      card.id = 'pcard-'+idx;
-      card.innerHTML = `
-        <div class="pcard-img">
-          <img src="${photo.path}?t=${Date.now()}" onload="this.style.display='block';this.closest('.pcard-img').querySelector('.no-img').style.display='none'" onerror="this.style.display='none'">
-          <div class="no-img">🖼️</div>
-        </div>
-        <div class="pcard-info">
-          <div class="pcard-label">${photo.label}</div>
-          <div class="pcard-path">${photo.path}</div>
-        </div>
-        <input class="pcard-alt" placeholder="Description SEO (alt)..." value="${photo.alt}" 
-               onchange="onAltChange(${idx}, this.value)" oninput="onAltChange(${idx}, this.value)"
-               onclick="event.stopPropagation()">
-      `;
-      card.querySelector('.pcard-img').onclick = () => openPhoto(idx);
-      card.ondragover = e => { e.preventDefault(); card.classList.add('drag-over'); };
-      card.ondragleave = () => card.classList.remove('drag-over');
-      card.ondrop = e => { e.preventDefault(); card.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f?.type.startsWith('image/')) stagePhoto(idx,f); };
-      g.appendChild(card);
+      allPhotos.push({...p});
+      grid.appendChild(makePhotoCard(idx, p, sec.size));
     });
-
-    wrap.appendChild(g);
-    grid.appendChild(wrap);
+    wrap.appendChild(grid);
+    content.appendChild(wrap);
   });
 }
 
-function onAltChange(idx, val) {
-  const photo = allPhotos[idx];
-  if (!photoPending[photo.path]) photoPending[photo.path] = { altOnly:true, newAlt:val, label:photo.label };
-  else photoPending[photo.path].newAlt = val;
-  updatePendingUI();
+function makePhotoCard(idx, photo, size) {
+  const card = document.createElement('div');
+  card.className = 'pcard';
+  card.id = 'pcard-' + idx;
+  const imgH = size === 'wide' ? 'tall' : 'short';
+  card.innerHTML = `
+    <div class="pcard-img ${imgH}">
+      <img src="${photo.path}?t=${Date.now()}"
+           onload="this.style.display='block';this.closest('.pcard-img').querySelector('.no-img').style.display='none'"
+           onerror="this.style.display='none'">
+      <div class="no-img">🖼️</div>
+    </div>
+    <div class="pcard-info">
+      <div class="pcard-label">${photo.label}</div>
+      <div class="pcard-path">${photo.path}</div>
+    </div>
+    <input class="pcard-alt" placeholder="Description SEO…" value="${photo.alt}"
+           onclick="event.stopPropagation()"
+           oninput="onAltChange(${idx}, this.value)">
+  `;
+  card.querySelector('.pcard-img').onclick = () => openFile(idx, 'photo');
+  card.ondragover = e => { e.preventDefault(); card.classList.add('drag-over'); };
+  card.ondragleave = () => card.classList.remove('drag-over');
+  card.ondrop = e => { e.preventDefault(); card.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f?.type.startsWith('image/')) stagePhoto(idx,f); };
+  return card;
 }
 
-function openPhoto(idx) { currentPhotoIdx = idx; document.getElementById('file-input').click(); }
+// ── BUILD AA ──
+function buildAA() {
+  allAA = [];
+  const content = document.getElementById('aa-content');
+  content.innerHTML = '';
+  AA_SECTIONS.forEach(sec => {
+    const wrap = document.createElement('div');
+    const t = document.createElement('div');
+    t.className = 'section-title';
+    t.textContent = sec.title;
+    wrap.appendChild(t);
+    sec.items.forEach(item => {
+      const beforeIdx = allAA.length;
+      allAA.push({path: item.before, label: 'Avant — ' + item.title});
+      const afterIdx = allAA.length;
+      allAA.push({path: item.after, label: 'Après — ' + item.title});
+
+      const pair = document.createElement('div');
+      pair.className = 'aa-pair';
+      pair.innerHTML = `<div class="aa-pair-title">${item.title}</div><div class="aa-slots" id="aaslots-${beforeIdx}"></div>`;
+      wrap.appendChild(pair);
+
+      setTimeout(() => {
+        const slots = document.getElementById('aaslots-' + beforeIdx);
+        if (!slots) return;
+        [{idx: beforeIdx, type:'before', label:'AVANT'}, {idx: afterIdx, type:'after', label:'APRÈS'}].forEach(s => {
+          const slot = document.createElement('div');
+          slot.className = 'aa-slot';
+          slot.id = 'aa-slot-' + s.idx;
+          slot.innerHTML = `
+            <div class="aa-slot-img">
+              <img src="${allAA[s.idx].path}?t=${Date.now()}"
+                   onload="this.style.display='block';this.closest('.aa-slot-img').querySelector('.aa-slot-no').style.display='none'"
+                   onerror="this.style.display='none'">
+              <div class="aa-slot-no"><div class="icon">${s.type==='before'?'🔴':'🟢'}</div><div class="lbl">${s.label}</div></div>
+              <span class="aa-badge ${s.type}">${s.label}</span>
+            </div>
+            <div class="aa-slot-lbl">Cliquer ou glisser une photo</div>
+          `;
+          slot.onclick = () => openFile(s.idx, 'aa');
+          slot.ondragover = e => { e.preventDefault(); slot.classList.add('drag-over'); };
+          slot.ondragleave = () => slot.classList.remove('drag-over');
+          slot.ondrop = e => { e.preventDefault(); slot.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f?.type.startsWith('image/')) stageAA(s.idx,f); };
+          slots.appendChild(slot);
+        });
+      }, 0);
+    });
+    content.appendChild(wrap);
+  });
+}
+
+// ── FILE PICKER ──
+function openFile(idx, type) {
+  currentIdx = idx; currentType = type;
+  document.getElementById('file-input').click();
+}
 document.getElementById('file-input').addEventListener('change', e => {
-  if (e.target.files[0] && currentPhotoIdx !== null) {
-    if (currentPhotoType === 'aa') stageAA(currentPhotoIdx, e.target.files[0]);
-    else stagePhoto(currentPhotoIdx, e.target.files[0]);
+  const f = e.target.files[0];
+  if (f && currentIdx !== null) {
+    if (currentType === 'aa') stageAA(currentIdx, f);
+    else stagePhoto(currentIdx, f);
   }
   e.target.value = '';
 });
 
-const AA_DATA = [{"page": "Film Solaire", "items": [{"title": "Open-space, Lille — 340 m²", "before": "img/aa/fs/0_before.jpg", "after": "img/aa/fs/0_after.jpg"}, {"title": "Showroom mobilier, Lyon", "before": "img/aa/fs/1_before.jpg", "after": "img/aa/fs/1_after.jpg"}]}, {"page": "Vitrophanie", "items": [{"title": "Cloisons salle de réunion, Lyon", "before": "img/aa/vt/0_before.jpg", "after": "img/aa/vt/0_after.jpg"}, {"title": "Vitrine commerce, Lille", "before": "img/aa/vt/1_before.jpg", "after": "img/aa/vt/1_after.jpg"}]}, {"page": "Stores", "items": [{"title": "Open-space 120 postes, Lille", "before": "img/aa/st/0_before.jpg", "after": "img/aa/st/0_after.jpg"}, {"title": "Cabinet médical, Lyon", "before": "img/aa/st/1_before.jpg", "after": "img/aa/st/1_after.jpg"}]}, {"page": "Covering", "items": [{"title": "Façades cuisine restaurant, Lille", "before": "img/aa/cv/0_before.jpg", "after": "img/aa/cv/0_after.jpg"}, {"title": "Comptoir réception hôtel, Lyon", "before": "img/aa/cv/1_before.jpg", "after": "img/aa/cv/1_after.jpg"}]}];
-let allAA = []; // { path, label, type ('before'|'after') }
-
-function buildAAGrid() {
-  allAA = [];
-  const grid = document.getElementById('aa-grid');
-  grid.innerHTML = '<p style="color:#555;font-size:.8rem;margin-bottom:16px">Déposez une photo <strong style="color:#ff6644">Avant</strong> et une photo <strong style="color:#44cc88">Après</strong> sur chaque chantier. Le slider sera immédiatement visible sur le site.</p>';
-
-  AA_DATA.forEach(section => {
-    const secDiv = document.createElement('div');
-    secDiv.innerHTML = '<div class="photo-section-title">' + section.page + '</div>';
-
-    section.items.forEach(item => {
-      const pair = document.createElement('div');
-      pair.className = 'aa-pair';
-      pair.innerHTML = '<div class="aa-pair-title">' + item.title + '</div><div class="aa-slots" id="slots-' + allAA.length + '"></div>';
-
-      const slotsId = allAA.length;
-      const beforeIdx = allAA.length;
-      allAA.push({ path: item.before, label: 'Avant — ' + item.title, type: 'before' });
-      const afterIdx = allAA.length;
-      allAA.push({ path: item.after, label: 'Après — ' + item.title, type: 'after' });
-
-      secDiv.appendChild(pair);
-      grid.appendChild(secDiv);
-
-      // Construire les 2 slots après insertion dans le DOM
-      setTimeout(() => {
-        const slotsDiv = pair.querySelector('.aa-slots');
-        if (!slotsDiv) return;
-
-        [{ idx: beforeIdx, type: 'before', label: 'AVANT' }, { idx: afterIdx, type: 'after', label: 'APRÈS' }].forEach(s => {
-          const slot = document.createElement('div');
-          slot.className = 'aa-slot';
-          slot.id = 'aa-slot-' + s.idx;
-          slot.innerHTML = '<div class="aa-slot-img"><div class="aa-no-img"><span style="font-size:1.4rem;opacity:.25">' + (s.type==='before' ? '🔴' : '🟢') + '</span>' + s.label + '</div><span class="aa-slot-badge ' + s.type + '">' + s.label + '</span></div><div class="aa-slot-label">' + s.label + ' — cliquer ou glisser</div>';
-
-          const img = new Image();
-          img.onload = () => {
-            img.style.display = 'block';
-            slot.querySelector('.aa-no-img').style.display = 'none';
-          };
-          img.src = allAA[s.idx].path + '?t=' + Date.now();
-          slot.querySelector('.aa-slot-img').appendChild(img);
-
-          slot.onclick = () => { currentPhotoIdx = s.idx; currentPhotoType = 'aa'; document.getElementById('file-input').click(); };
-          slot.ondragover = e => { e.preventDefault(); slot.classList.add('drag-over'); };
-          slot.ondragleave = () => slot.classList.remove('drag-over');
-          slot.ondrop = e => { e.preventDefault(); slot.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f?.type.startsWith('image/')) stageAA(s.idx, f); };
-
-          slotsDiv.appendChild(slot);
-        });
-      }, 0);
-    });
-  });
-}
-
-let currentPhotoType = 'photo';
-
-async function stageAA(idx, file) {
-  const item = allAA[idx];
-  const b64 = await fileToB64(file);
-  const url = URL.createObjectURL(file);
-  const slot = document.getElementById('aa-slot-' + idx);
-  const img = slot.querySelector('img');
-  if (img) { img.src = url; img.style.display = 'block'; slot.querySelector('.aa-no-img').style.display='none'; }
-  slot.classList.add('pending');
-  let dot = slot.querySelector('.aa-slot-pdot');
-  if (!dot) { dot=document.createElement('span'); dot.className='aa-slot-pdot'; dot.textContent='● nouveau'; slot.querySelector('.aa-slot-img').appendChild(dot); }
-  photoPending[item.path] = { b64, altOnly:false, newAlt: item.label, label: item.label };
+// ── STAGE PHOTO ──
+function onAltChange(idx, val) {
+  const photo = allPhotos[idx];
+  const input = document.querySelector(`#pcard-${idx} .pcard-alt`);
+  if (input) input.classList.add('changed');
+  if (!pending[photo.path]) pending[photo.path] = {altOnly:true, newAlt:val, label:photo.label};
+  else pending[photo.path].newAlt = val;
   updatePendingUI();
-  toast('info', '"' + item.label + '" en attente — cliquez Publier');
 }
-
 
 async function stagePhoto(idx, file) {
   const photo = allPhotos[idx];
-  const b64 = await fileToB64(file);
+  const b64 = await toB64(file);
   const url = URL.createObjectURL(file);
-  const card = document.getElementById('pcard-'+idx);
-  const img = card.querySelector('img');
-  img.src = url; img.style.display = 'block';
+  const card = document.getElementById('pcard-' + idx);
+  const img = card.querySelector('img'); img.src = url; img.style.display = 'block';
   card.querySelector('.no-img').style.display = 'none';
   card.classList.add('pending');
-  let dot = card.querySelector('.pdot');
-  if (!dot) { dot = document.createElement('div'); dot.className='pdot'; dot.textContent='● nouveau'; card.querySelector('.pcard-img').appendChild(dot); }
-  const currentAlt = card.querySelector('.pcard-alt').value;
-  photoPending[photo.path] = { b64, altOnly:false, newAlt:currentAlt, label:photo.label };
+  if (!card.querySelector('.pdot')) {
+    const dot = document.createElement('div'); dot.className='pdot'; dot.textContent='● nouveau';
+    card.querySelector('.pcard-img').appendChild(dot);
+  }
+  const alt = card.querySelector('.pcard-alt')?.value || photo.alt;
+  pending[photo.path] = {b64, altOnly:false, newAlt:alt, label:photo.label};
   updatePendingUI();
-  toast('info', `"${photo.label}" en attente — cliquez Publier`);
+  toast('info', `"${photo.label}" prête — cliquez Publier`);
 }
 
-function fileToB64(file) {
+async function stageAA(idx, file) {
+  const item = allAA[idx];
+  const b64 = await toB64(file);
+  const url = URL.createObjectURL(file);
+  const slot = document.getElementById('aa-slot-' + idx);
+  const img = slot.querySelector('img'); img.src = url; img.style.display = 'block';
+  slot.querySelector('.aa-slot-no').style.display = 'none';
+  slot.classList.add('pending');
+  if (!slot.querySelector('.aa-pdot')) {
+    const dot = document.createElement('span'); dot.className='aa-pdot'; dot.textContent='● nouveau';
+    slot.querySelector('.aa-slot-img').appendChild(dot);
+  }
+  pending[item.path] = {b64, altOnly:false, newAlt:item.label, label:item.label};
+  updatePendingUI();
+  toast('info', `"${item.label}" prête — cliquez Publier`);
+}
+
+function toB64(file) {
   return new Promise((res,rej) => {
     const r = new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(file);
   });
@@ -625,104 +436,75 @@ function fileToB64(file) {
 
 // ── PENDING UI ──
 function updatePendingUI() {
-  const tCount = Object.keys(textPending).length;
-  const pCount = Object.keys(photoPending).length;
-  const total = tCount + pCount;
+  const n = Object.keys(pending).length;
   const badge = document.getElementById('pending-badge');
   const btn = document.getElementById('publish-btn');
-  if (total > 0) {
-    badge.textContent = `${total} modification${total>1?'s':''} en attente`;
-    badge.style.display = 'block';
-    btn.style.display = 'block';
-  } else {
-    badge.style.display = 'none';
-    btn.style.display = 'none';
-  }
+  badge.textContent = `${n} modification${n>1?'s':''} en attente`;
+  badge.style.display = n > 0 ? 'block' : 'none';
+  btn.style.display = n > 0 ? 'block' : 'none';
 }
 
 // ── PUBLISH ──
 async function publishAll() {
+  const entries = Object.entries(pending);
+  if (!entries.length) return;
   const btn = document.getElementById('publish-btn');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Publication…';
 
   const password = sessionStorage.getItem('af_pwd');
+  const files = entries.filter(([,c]) => !c.altOnly).map(([path,c]) => ({path, b64:c.b64}));
 
-  // 1. Préparer les fichiers images
-  const files = Object.entries(photoPending)
-    .filter(([_,c]) => !c.altOnly)
-    .map(([path,c]) => ({ path, b64:c.b64 }));
-
-  // 2. Récupérer index.html + appliquer les modifications texte et alt
+  // Récupérer index.html pour les alt
   let indexContent = null, indexSha = null;
-  const hasTextChanges = Object.keys(textPending).length > 0;
-  const hasAltChanges = Object.values(photoPending).some(c => c.newAlt);
-
-  if (hasTextChanges || hasAltChanges) {
+  const hasAlt = entries.some(([,c]) => c.newAlt);
+  if (hasAlt) {
     try {
       const r = await fetch(`https://api.github.com/repos/${REPO}/contents/index.html`);
       const d = await r.json();
       indexSha = d.sha;
-      const b = d.content.replace(/\n/g,'');
-      const bytes = Array.from(atob(b), c=>c.charCodeAt(0));
-      indexContent = new TextDecoder('utf-8').decode(new Uint8Array(bytes));
-
-      // Appliquer les changements texte
-      for (const [uid, newText] of Object.entries(textPending)) {
-        // Remplacer le contenu de l'élément data-editable="uid"
-        indexContent = indexContent.replace(
-          new RegExp(`(data-editable="${uid}"[^>]*>)[\\s\\S]*?(<\\/[a-z0-9]+>)`, 'i'),
-          (m, open, close) => open + newText + close
-        );
-      }
-
-      // Appliquer les changements alt
-      for (const [path, change] of Object.entries(photoPending)) {
+      const bytes = Array.from(atob(d.content.replace(/\n/g,'')), c=>c.charCodeAt(0));
+      indexContent = new TextDecoder().decode(new Uint8Array(bytes));
+      for (const [path, change] of entries) {
         if (!change.newAlt) continue;
         const esc = path.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-        indexContent = indexContent.replace(
-          new RegExp(`(<img[^>]*src="${esc}"[^>]*?)alt="[^"]*"`, 'g'),
-          `$1alt="${change.newAlt}"`
-        );
-        indexContent = indexContent.replace(
-          new RegExp(`(<img[^>]*?)alt="[^"]*"([^>]*src="${esc}")`, 'g'),
-          `$1alt="${change.newAlt}"$2`
-        );
+        indexContent = indexContent.replace(new RegExp(`(<img[^>]*src="${esc}"[^>]*?)alt="[^"]*"`, 'g'), `$1alt="${change.newAlt}"`);
       }
-    } catch(e) {
-      toast('error','❌ Erreur lecture index.html'); btn.disabled=false; btn.textContent='🚀 Publier'; return;
-    }
+    } catch(e) { console.warn('index.html:', e); }
   }
 
   try {
     const res = await fetch('/api/upload', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ password, files, indexHtml:indexContent, indexSha })
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({password, files, indexHtml:indexContent, indexSha})
     });
     const data = await res.json();
-    if (res.status===401) { toast('error','❌ Mot de passe refusé'); btn.disabled=false; btn.textContent='🚀 Publier'; return; }
+    if (res.status === 401) { toast('error','❌ Mot de passe refusé'); btn.disabled=false; btn.textContent='🚀 Publier'; return; }
 
     const ok = data.results?.filter(r=>r.ok).length || 0;
     const err = data.results?.filter(r=>!r.ok).length || 0;
 
     // Nettoyer
-    for (const uid of Object.keys(textPending)) delete textPending[uid];
-    for (const path of Object.keys(photoPending)) {
-      delete photoPending[path];
-      allPhotos.forEach((p,idx) => {
-        if (p.path===path) {
-          document.getElementById('pcard-'+idx)?.classList.remove('pending');
-          document.getElementById('pcard-'+idx)?.querySelector('.pdot')?.remove();
+    for (const path of Object.keys(pending)) {
+      delete pending[path];
+      allPhotos.forEach((p,i) => {
+        if (p.path === path) {
+          document.getElementById('pcard-'+i)?.classList.remove('pending');
+          document.getElementById('pcard-'+i)?.querySelector('.pdot')?.remove();
+          document.getElementById('pcard-'+i)?.querySelector('.pcard-alt')?.classList.remove('changed');
+        }
+      });
+      allAA.forEach((p,i) => {
+        if (p.path === path) {
+          document.getElementById('aa-slot-'+i)?.classList.remove('pending');
+          document.getElementById('aa-slot-'+i)?.querySelector('.aa-pdot')?.remove();
         }
       });
     }
-
     updatePendingUI();
-    if (err===0) toast('success',`✅ ${ok} modification${ok>1?'s':''} publiée${ok>1?'s':''} — en ligne dans ~30s`);
-    else toast('error',`⚠️ ${ok} ok, ${err} erreur(s)`);
-  } catch(e) {
-    toast('error','❌ '+e.message);
-  }
+    if (err===0) toast('success', `✅ ${ok} modification${ok>1?'s':''} publiée${ok>1?'s':''} — en ligne dans ~30s`);
+    else toast('error', `⚠️ ${ok} ok, ${err} erreur(s)`);
+  } catch(e) { toast('error','❌ '+e.message); }
 
   btn.disabled=false; btn.textContent='🚀 Publier';
 }
@@ -730,7 +512,7 @@ async function publishAll() {
 function toast(type, msg) {
   const t=document.getElementById('toast');
   t.textContent=msg; t.className=`toast show ${type}`;
-  setTimeout(()=>t.className='toast',6000);
+  setTimeout(()=>t.className='toast', 6000);
 }
 </script>
 </body>
